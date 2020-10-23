@@ -1,0 +1,28 @@
+{
+  "name": "infovis_ingredientsgraphvisualization",
+  "version": "1.0.0",
+  "description": "Final project for the Information Visualization course, Roma Tre 2019/2020",
+  "main": "routes.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petruz93/InfoVis_IngredientsGraphVisualization.git"
+  },
+  "keywords": [
+    "InfoVis"
+  ],
+  "author": "Alessandro Aurora & Matteo Petruzziello",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/petruz93/InfoVis_IngredientsGraphVisualization/issues"
+  },
+  "homepage": "https://github.com/petruz93/InfoVis_IngredientsGraphVisualization#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
