@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/recipes-icon.png">
-    <Dashboard msg="Welcome to RecipAdvisor"/>
+    <img alt="App logo" src="./assets/recipes-icon.png">
+    <Dashboard msg="Welcome to RecipAdvisor"></Dashboard>
   </div>
 </template>
 

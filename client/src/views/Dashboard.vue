@@ -1,53 +1,68 @@
 <template>
   <div class="">
-    <!-- <form method="POST" action="">
-      <label for="search">Search meals</label><br>
-      <input type="text" id="search" name="search"><br>
-      <input type="submit" value="Submit" 
-        @click="fetchData">
-    </form> -->
     <label for="search">Search meals</label><br>
-    <input type="text" id="search" name="search" placeholder="search by ingredient"
-      v-model="ingredient"><br>
-    <!-- <option v-for="ingredient in ingredientData.meals" 
-        :key=ingredient.strIngredient></option> -->
-    <select>
-      <option v-for="i in ingredientData" 
+    <input type="text" id="search" placeholder="search by ingredient"
+      v-model="ingredient">
+    <br>
+    <select v-model="ingredient">
+      <option value="" selected hidden>Select one ingredient</option>
+      <option v-for="i in ingredientData"
         :key=i.idIngredient
-        :value=i.strIngredient></option>
+        >{{ i.strIngredient }}</option>
     </select>
     <p v-if="error">{{ error }}</p>
     <button @click="fetchData(ingredient)">Submit</button>
+    <div>selected ingredients: {{ selectedIngredients }}</div>
 
-    <Result 
+    <Result v-if="mealData.length"
       :meals=mealData>
     </Result>
-    <!-- <Result meals="{{mealData}}"/> -->
+
+    <hr>
+    <div>
+      <ul>
+        <li v-for="i in ingredientData" :key=i.idIngredient
+            @click="updateList(i.strIngredient)">
+          <div>
+            {{ i.strIngredient }}
+          </div>
+          <div>
+            <img :alt="i.strIngredient" :src="imageURL(i.strIngredient)"
+                width="100px" class="ingr-img">
+          </div>
+          
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 
 <script>
 // import Result from '@/components/Result.vue'
-import {getMealsByIngredient, getAllIngredients} from '@/FetchDataUtils.js' 
+import {getMealsByIngredient, getAllIngredients, getSmallIngrImageURL} from '@/FetchDataUtils.js' 
 
 export default {
   name: 'Dashboard',
   components: {
     Result: () => import('@/components/Result.vue')
   },
+
   data () {
     return {
       mealData: [],
       ingredientData: [],
-      ingredient: null,
+      selectedIngredients: [],
+      ingredient: '',
       error: null
     }
   },
+
   created () {
     console.log('App loaded'),
     this.fetchIngredients()
   },
+
   methods: {
     async fetchData (ingredient) {
       try {
@@ -56,50 +71,51 @@ export default {
         this.error = error.message
       }
     },
-    async fetchIngredients () {
+    async fetchIngredients() {
       try {
         this.ingredientData = await getAllIngredients()
+        this.ingredientData.sort((a,b) => a.strIngredient.localeCompare(b.strIngredient))
       } catch(error) {
         this.error = error.message
       }
+    },
+    imageURL(ingr) {
+      return getSmallIngrImageURL(ingr)
+    },
+    updateList(ingr) {
+      if (!this.selectedIngredients.includes(ingr))
+        this.selectedIngredients.push(ingr)
     }
   }
 }
-/*
-Search meal by name
-https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata
-
-Lookup full meal details by id
-https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772
-
-List all meal categories
-https://www.themealdb.com/api/json/v1/1/categories.php
-
-List all Categories, Area, Ingredients
-https://www.themealdb.com/api/json/v1/1/list.php?a=list
-https://www.themealdb.com/api/json/v1/1/list.php?i=list
-
-Filter by main ingredient
-https://www.themealdb.com/api/json/v1/1/filter.php?i=chicken_breast
-
-Filter by Category
-https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood
-
-Filter by Area
-https://www.themealdb.com/api/json/v1/1/filter.php?a=Canadian
-
-
-Meal Thumbnail Images
-Add /preview to the end of the meal image URL
-https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg/preview
-
-Ingredient Thumbnail Images
-https://www.themealdb.com/images/ingredients/Lime.png
-https://www.themealdb.com/images/ingredients/Lime-Small.png
-*/
 </script>
 
 
 <style>
+  ul {
+    list-style-type: none;
+    margin: 20;
+    padding: 0;
+    overflow: hidden;
+  }
 
+  li {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 16px;
+    width: 20%;
+    min-width: 100px;
+    max-width: 200px;
+    text-decoration: none;
+  }
+
+  li:hover {
+    background-color: #f5f1f1;
+  }
+
+  .ingr-img {
+    border: 1px solid;
+  }
 </style>
