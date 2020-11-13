@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>
-      Meals founded:<br>
+      Meals found:<br>
       <ul>
         <li v-for="meal in meals" :key="meal.strMeal">
           {{meal.strMeal}}

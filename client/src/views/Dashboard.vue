@@ -9,6 +9,14 @@
     <label for="search">Search meals</label><br>
     <input type="text" id="search" name="search" placeholder="search by ingredient"
       v-model="ingredient"><br>
+    <!-- <option v-for="ingredient in ingredientData.meals" 
+        :key=ingredient.strIngredient></option> -->
+    <select>
+      <option v-for="i in ingredientData" 
+        :key=i.idIngredient
+        :value=i.strIngredient></option>
+    </select>
+    <p v-if="error">{{ error }}</p>
     <button @click="fetchData(ingredient)">Submit</button>
 
     <Result 
@@ -21,7 +29,7 @@
 
 <script>
 // import Result from '@/components/Result.vue'
-import getMealsByIngredient from '@/FetchDataUtils.js'
+import {getMealsByIngredient, getAllIngredients} from '@/FetchDataUtils.js' 
 
 export default {
   name: 'Dashboard',
@@ -30,15 +38,30 @@ export default {
   },
   data () {
     return {
-      mealData: []
+      mealData: [],
+      ingredientData: [],
+      ingredient: null,
+      error: null
     }
   },
   created () {
-    console.log('App loaded')
+    console.log('App loaded'),
+    this.fetchIngredients()
   },
   methods: {
     async fetchData (ingredient) {
+      try {
       this.mealData = await getMealsByIngredient(ingredient)
+      } catch(error) {
+        this.error = error.message
+      }
+    },
+    async fetchIngredients () {
+      try {
+        this.ingredientData = await getAllIngredients()
+      } catch(error) {
+        this.error = error.message
+      }
     }
   }
 }

@@ -350,3 +350,6 @@ MigrationBackup/
 .ionide/
 
 .vscode
+
+vue-material-kit-master
+server
