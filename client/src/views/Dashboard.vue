@@ -1,40 +1,45 @@
 <template>
-  <div class="">
-    <label for="search">Search meals</label><br>
-    <input type="text" id="search" placeholder="search by ingredient"
-      v-model="ingredient">
-    <br>
-    <select v-model="ingredient">
+  <b-container>
+    <div class="m-3 px-5">
+      <label for="filt-ingr">Search meals</label><br>
+      <b-input v-model="ingredient"
+        id="filt-ingr"
+        placeholder="Search your ingredients"
+      ></b-input>
+      <b-button @click="fetchData(ingredient)" class="my-3">Submit</b-button>
+    </div>
+    <!-- <select v-model="ingredient">
       <option value="" selected hidden>Select one ingredient</option>
-      <option v-for="i in ingredientData"
+      <option v-for="i in allIngredients"
         :key=i.idIngredient
         >{{ i.strIngredient }}</option>
-    </select>
-    <p v-if="error">{{ error }}</p>
-    <button @click="fetchData(ingredient)">Submit</button>
+    </select> -->
     <div>selected ingredients: {{ selectedIngredients }}</div>
 
-    <Result v-if="mealData.length"
+    <Result 
       :meals=mealData>
     </Result>
 
+<!-- visualizzazione degli ingredienti. provvisoria. -->
     <hr>
     <div>
+      <div v-if="!filteredIngredients.length && allIngredients.length">
+        <em>No ingredients found...</em>
+      </div>
       <ul>
-        <li v-for="i in ingredientData" :key=i.idIngredient
+        <li v-for="i in filteredIngredients" :key="i.idIngredient"
             @click="updateList(i.strIngredient)">
           <div>
             {{ i.strIngredient }}
           </div>
           <div>
             <img :alt="i.strIngredient" :src="imageURL(i.strIngredient)"
-                width="100px" class="ingr-img">
+                class="ingr-img">
           </div>
-          
         </li>
       </ul>
     </div>
-  </div>
+  </b-container>
 </template>
 
 
@@ -51,10 +56,9 @@ export default {
   data () {
     return {
       mealData: [],
-      ingredientData: [],
+      allIngredients: [],
       selectedIngredients: [],
-      ingredient: '',
-      error: null
+      ingredient: ''
     }
   },
 
@@ -73,8 +77,8 @@ export default {
     },
     async fetchIngredients() {
       try {
-        this.ingredientData = await getAllIngredients()
-        this.ingredientData.sort((a,b) => a.strIngredient.localeCompare(b.strIngredient))
+        this.allIngredients = await getAllIngredients()
+        this.allIngredients.sort((a,b) => a.strIngredient.localeCompare(b.strIngredient))
       } catch(error) {
         this.error = error.message
       }
@@ -85,6 +89,15 @@ export default {
     updateList(ingr) {
       if (!this.selectedIngredients.includes(ingr))
         this.selectedIngredients.push(ingr)
+      else this.selectedIngredients.splice(this.selectedIngredients.indexOf(ingr), 1)
+    }
+  },
+
+  computed: {
+    filteredIngredients () {
+      return this.allIngredients.filter(i => {
+        return i.strIngredient.toLowerCase().includes(this.ingredient.toLowerCase())
+      })
     }
   }
 }
@@ -97,17 +110,18 @@ export default {
     margin: 20;
     padding: 0;
     overflow: hidden;
+    display: inline-block;
   }
 
   li {
     float: left;
-    display: block;
+    /* display: block; */
     color: black;
     text-align: center;
     padding: 16px;
     width: 20%;
     min-width: 100px;
-    max-width: 200px;
+    /* max-width: 200px; */
     text-decoration: none;
   }
 
@@ -117,5 +131,7 @@ export default {
 
   .ingr-img {
     border: 1px solid;
+    height: 100px;
+    width: 100px;
   }
 </style>

@@ -58,27 +58,17 @@ async function getAllIngredients() {
 }
 
 // https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg/preview
-async function getMealImage() {
-  try {
-    const res = await getBaseURL().get(``)
-    return res.data.meals
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-}
+// async function getMealImage() {
+//   try {
+//     const res = await getBaseURL().get(``)
+//     return res.data.meals
+//   } catch (error) {
+//     console.log(error)
+//     throw error
+//   }
+// }
 
 // https://www.themealdb.com/images/ingredients/Lime-Small.png
-async function getIngredientImage(ingr) {
-  try {
-    const res = await axios.get(`https://www.themealdb.com/images/ingredients/${ingr}.png`)
-    return res.data.meals
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-}
-
 function getIngrImageURL(ingr) {
   return `https://www.themealdb.com/images/ingredients/${ingr}.png`
 }
@@ -94,8 +84,6 @@ export {
   getAllAreas, 
   getAllIngredients,
   getMealDetailsById,
-  getMealImage,
-  getIngredientImage,
   getIngrImageURL,
   getSmallIngrImageURL
 }
