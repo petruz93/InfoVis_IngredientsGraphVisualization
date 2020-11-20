@@ -27,3 +27,32 @@ export default {
   },
 };
 </script>
+
+<style>
+  ul {
+    list-style-type: none;
+    margin: 20;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  li {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 16px;
+    width: 20%;
+    min-width: 100px;
+    max-width: 200px;
+    text-decoration: none;
+  }
+
+  li:hover {
+    background-color: #f5f1f1;
+  }
+
+  .ingr-img {
+    border: 1px solid;
+  }
+</style>

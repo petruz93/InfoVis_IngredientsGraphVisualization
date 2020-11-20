@@ -4,6 +4,7 @@
       Meals found:<br>
       <ul>
         <li v-for="meal in meals" :key="meal.strMeal">
+          <img :alt="meal.strMealThumb" :src="meal.strMealThumb" width="100px">
           {{meal.strMeal}}
         </li>
       </ul>

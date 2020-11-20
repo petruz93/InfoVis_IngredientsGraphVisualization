@@ -14,7 +14,7 @@
         :key=i.idIngredient
         >{{ i.strIngredient }}</option>
     </select> -->
-    <div>selected ingredients: {{ selectedIngredients }}</div>
+    <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients>
 
     <Result 
       :meals=mealData>
@@ -46,11 +46,13 @@
 <script>
 // import Result from '@/components/Result.vue'
 import {getMealsByIngredient, getAllIngredients, getSmallIngrImageURL} from '@/FetchDataUtils.js' 
+import SelectedIngredients from '../components/SelectedIngredients.vue'
 
 export default {
   name: 'Dashboard',
   components: {
-    Result: () => import('@/components/Result.vue')
+    Result: () => import('@/components/Result.vue'),
+    SelectedIngredients
   },
 
   data () {
