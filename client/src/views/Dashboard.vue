@@ -1,13 +1,14 @@
 <template>
   <b-container>
-    <div class="m-3 px-5">
+    <!-- <div class="m-3 px-5">
       <label for="filt-ingr">Search meals</label><br>
       <b-input v-model="ingredient"
         id="filt-ingr"
         placeholder="Search your ingredients"
       ></b-input>
       <b-button @click="fetchData(ingredient)" class="my-3">Submit</b-button>
-    </div>
+    </div> -->
+    <SearchBar :ingredients=allIngredients />
     <!-- <select v-model="ingredient">
       <option value="" selected hidden>Select one ingredient</option>
       <option v-for="i in allIngredients"
@@ -16,9 +17,9 @@
     </select> -->
     <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients>
 
-    <Result 
+    <!-- <Result 
       :meals=mealData>
-    </Result>
+    </Result> -->
 
 <!-- visualizzazione degli ingredienti. provvisoria. -->
     <hr>
@@ -34,7 +35,7 @@
           </div>
           <div>
             <img :alt="i.strIngredient" :src="imageURL(i.strIngredient)"
-                class="ingr-img">
+                class="ingr-img border border-secondary">
           </div>
         </li>
       </ul>
@@ -46,13 +47,14 @@
 <script>
 // import Result from '@/components/Result.vue'
 import {getMealsByIngredient, getAllIngredients, getSmallIngrImageURL} from '@/FetchDataUtils.js' 
-import SelectedIngredients from '../components/SelectedIngredients.vue'
+// import SelectedIngredients from '../components/SelectedIngredients.vue'
 
 export default {
   name: 'Dashboard',
   components: {
-    Result: () => import('@/components/Result.vue'),
-    SelectedIngredients
+    // Result: () => import('@/components/Result.vue'),
+    SelectedIngredients: () => import('@/components/SelectedIngredients.vue'),
+    SearchBar: () => import('@/components/SearchBar')
   },
 
   data () {
@@ -130,9 +132,10 @@ export default {
   li:hover {
     background-color: #f5f1f1;
   }
+</style>
 
+<style scoped>
   .ingr-img {
-    border: 1px solid;
     height: 100px;
     width: 100px;
   }
