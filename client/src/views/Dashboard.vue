@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container fluid="md">
     <!-- <div class="m-3 px-5">
       <label for="filt-ingr">Search meals</label><br>
       <b-input v-model="ingredient"
@@ -20,6 +20,10 @@
     <!-- <Result 
       :meals=mealData>
     </Result> -->
+
+<!-- visualizzazione degli ingredienti in ordine alfabetico -->
+    <hr>
+    <IngredientVisualizer :ingredients=allIngredients></IngredientVisualizer>
 
 <!-- visualizzazione degli ingredienti. provvisoria. -->
     <hr>
@@ -46,15 +50,15 @@
 
 <script>
 // import Result from '@/components/Result.vue'
-import {getMealsByIngredient, getAllIngredients, getSmallIngrImageURL} from '@/FetchDataUtils.js' 
-// import SelectedIngredients from '../components/SelectedIngredients.vue'
+import {getMealsByIngredient, getAllIngredients, getSmallIngrImageURL} from '@/themealdbConnector.js' 
 
 export default {
   name: 'Dashboard',
   components: {
     // Result: () => import('@/components/Result.vue'),
-    SelectedIngredients: () => import('@/components/SelectedIngredients.vue'),
-    SearchBar: () => import('@/components/SearchBar')
+    SearchBar: () => import('@/components/SearchBar'),
+    SelectedIngredients: () => import('@/components/SelectedIngredients'),
+    IngredientVisualizer: () => import('@/components/IngredientVisualizer')
   },
 
   data () {

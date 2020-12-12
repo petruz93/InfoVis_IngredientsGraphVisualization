@@ -1,58 +1,67 @@
 <template>
   <div>
-    <div v-if="selectedIngredients!=={}">
-      <v-for="i in selectedIngredients">
-        
-        {{this.selectedIngredients.strIngredient}}
-    </div>
+    <b-list-group flush>
+      <b-list-group-item v-for="(list, letter) in alphabeticalIngredients" :key=letter>
+        <h3 class="text-left">{{ letter }}</h3>
+        <b-list-group horizontal class="overflow-auto">
+          <b-list-group-item v-for="i in list" :key="i">
+            <img alt="" :src="imageURL(i)" class="ingr-img d-block">
+            <div class="d-block">{{ i }}</div>
+            <!-- <b-button-close text-variant="danger" class="d-block"
+              @click="removeElem(i)">&times;</b-button-close> -->
+          </b-list-group-item>
+        </b-list-group>
+      </b-list-group-item>
+    </b-list-group>
   </div>
 </template>
 
+
 <script>
+import { getSmallIngrImageURL } from "@/themealdbConnector.js";
+
 export default {
   name: "IngredientVisualizer",
+
   props: {
-    selectedIngredients: {
+    ingredients: {
       required: true,
-      type: Object,
-      default: () => {},
-    },
-    selectedIngredientImgs: {},
+      type: Array,
+      default: () => [],
+    }
   },
-  data() {},
+
+  data() {
+    return {}
+  },
+
+  methods: {
+    imageURL(ingr) {
+      return getSmallIngrImageURL(ingr)
+    }
+  },
+
   computed: {
-    prepareData() {
-      selectedIngredients;
-    },
-  },
-};
+    alphabeticalIngredients () {
+      const abIngredients = new Object()
+      for (const c of this.ingredients) {
+        const ingrName = c.strIngredient
+        const initial = ingrName.charAt(0)
+        if (!Object.prototype.hasOwnProperty.call(abIngredients, initial)) {
+          abIngredients[initial] = []
+        }
+        abIngredients[initial].push(ingrName)
+      }
+      return abIngredients
+    }
+  }
+}
 </script>
 
-<style>
-  ul {
-    list-style-type: none;
-    margin: 20;
-    padding: 0;
-    overflow: hidden;
-  }
 
-  li {
-    float: left;
-    display: block;
-    color: black;
-    text-align: center;
-    padding: 16px;
-    width: 20%;
-    min-width: 100px;
-    max-width: 200px;
-    text-decoration: none;
-  }
-
-  li:hover {
-    background-color: #f5f1f1;
-  }
-
-  .ingr-img {
-    border: 1px solid;
-  }
+<style scoped>
+.ingr-img {
+  height: 100px;
+  width: 100px;
+}
 </style>
