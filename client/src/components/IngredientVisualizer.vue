@@ -5,10 +5,10 @@
         <h3 class="text-left">{{ letter }}</h3>
         <b-list-group horizontal class="overflow-auto">
           <b-list-group-item v-for="i in list" :key="i">
-            <img alt="" :src="imageURL(i)" class="ingr-img d-block">
-            <div class="d-block">{{ i }}</div>
-            <!-- <b-button-close text-variant="danger" class="d-block"
-              @click="removeElem(i)">&times;</b-button-close> -->
+            <a href="#" class="text-dark">
+              <img alt="" :src="imageURL(i)" class="ingr-img d-block">
+              <div class="d-block">{{ i }}</div>
+            </a>
           </b-list-group-item>
         </b-list-group>
       </b-list-group-item>

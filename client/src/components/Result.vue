@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="meals.length">
     <p>
       Meals found:<br>
       <ul>
