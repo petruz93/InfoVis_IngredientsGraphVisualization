@@ -1,34 +1,24 @@
 <template>
   <b-container>
     <div class="m-3 px-5">
-      <!-- <label for="filt-ingr">Search meals</label><br>
-      <b-input v-model="selectedIngredients"
-        id="filt-ingr"
-        placeholder="Search your ingredients"
-      ></b-input> -->
-      <v-select
-        multiple
+      <v-select multiple
         v-model="selectedIngredients"
         label="strIngredient"
-        :reduce="selectedIngredients=> selectedIngredients.strIngredient"
+        :reduce="i => i.strIngredient"
         :options="ingredients"
-        @input="submitData"
-        >
+        placeholder="Choose your ingredients">
         <!--  
-                multiple  -->
-      <!-- <option value="selected hidden">Select one ingredient</option>
-      <option v-for="i in allIngredients"
-        :key=i.idIngredient
-        >{{ i.strIngredient }}</option> 
-                @search="fetchOptions"
+        @input="addToSelectedList"
         @input="submitData"
-        -->
+          -->
       </v-select>
       <!-- <b-button @click="submitData(selectedIngredients)" class="my-3">Submit</b-button> -->
     </div>
+    <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients>
     <Result :meals=mealData />
   </b-container>
 </template>
+
 
 <script>
 import { getMealsByIngredient } from '@/themealdbConnector.js'
@@ -37,6 +27,13 @@ import 'vue-select/dist/vue-select.css';
 
 export default {
   name: 'SearchBar',
+
+  components: {
+    SelectedIngredients: () => import('@/components/SelectedIngredients'),
+    Result: () => import('@/components/Result.vue'),
+    vSelect
+  },
+
   props: {
     ingredients: {
       required: true,
@@ -44,28 +41,28 @@ export default {
       default: () => {}
     }
   },
-  components: { 
-    Result: () => import('@/components/Result.vue'),
-    vSelect
-  },
+
   data () {
     return {
       mealData: [],
-      selectedIngredients: '',
-      prova: ['aaa','bbb','ccc']
+      selectedIngredients: []
     }
   },
+
   methods: {
     async submitData (ingredient) {
       try {
       this.mealData = await getMealsByIngredient(ingredient)
       } catch(error) {
-        this.error = error.message
+        console.log('Error on submitData function:', error)
       }
-    },
-    async fetchOptions (search) {
-       return this.ingredients[search]
     }
+    // addToSelectedList(ingr) {
+    //   this.$emit('add-ingredient', ingr)
+    // },
+    // async fetchOptions (search) {
+    //    return this.ingredients[search]
+    // }
   }
 }
 </script>
