@@ -1,19 +1,29 @@
 <template>
   <b-container>
-    <div class="m-3 px-5">
-      <v-select multiple
-        v-model="selectedIngredients"
-        label="strIngredient"
-        :reduce="i => i.strIngredient"
-        :options="ingredients"
-        placeholder="Choose your ingredients">
-        <!--  
-        @input="addToSelectedList"
-        @input="submitData"
-          -->
-      </v-select>
+    <b-row class="justify-content-sm-center">
+      <b-col md="8">
+        <v-select multiple
+          v-model="selectedIngredients"
+          label="strIngredient"
+          :reduce="i => i.strIngredient"
+          :options="ingredients"
+          placeholder="Choose your ingredients">
+          <!--  
+          @input="addToSelectedList"
+          @input="submitData"
+            -->
+          <template #option="{ strIngredient }">
+            <b-avatar :src="imageURL(strIngredient)"
+                      icon="question"
+                      variant="light"
+                      size="lg"
+                      class="mr-2 border border-dark"></b-avatar>
+            <span class="mr-auto">{{ strIngredient }}</span>
+          </template>
+        </v-select>
+      </b-col>
+    </b-row>
       <!-- <b-button @click="submitData(selectedIngredients)" class="my-3">Submit</b-button> -->
-    </div>
     <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients>
     <Result :meals=mealData />
   </b-container>
@@ -21,9 +31,9 @@
 
 
 <script>
-import { getMealsByIngredient } from '@/themealdbConnector.js'
 import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css';
+import 'vue-select/dist/vue-select.css'
+import { getSmallIngrImageURL } from '@/themealdbConnector.js'
 
 export default {
   name: 'SearchBar',
@@ -50,13 +60,16 @@ export default {
   },
 
   methods: {
-    async submitData (ingredient) {
-      try {
-      this.mealData = await getMealsByIngredient(ingredient)
-      } catch(error) {
-        console.log('Error on submitData function:', error)
-      }
+    imageURL(ingr) {
+      return getSmallIngrImageURL(ingr)
     }
+    // async submitData (ingredient) {
+    //   try {
+    //   this.mealData = await getMealsByIngredient(ingredient)
+    //   } catch(error) {
+    //     console.log('Error on submitData function:', error)
+    //   }
+    // },
     // addToSelectedList(ingr) {
     //   this.$emit('add-ingredient', ingr)
     // },
