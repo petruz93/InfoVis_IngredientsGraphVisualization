@@ -12,7 +12,7 @@
 
 
 <script>
-import { getSmallIngrImageURL } from "@/themealdbConnector.js";
+import { getSmallIngrImageURL } from "@/themealdbConnector.js"
 
 export default {
   name: 'SelectedIngredients',

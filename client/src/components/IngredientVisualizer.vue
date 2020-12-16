@@ -6,7 +6,7 @@
         <b-list-group horizontal class="overflow-auto">
           <b-list-group-item v-for="i in list" :key="i">
             <a href="#" class="text-dark">
-              <img alt="" :src="imageURL(i)" class="ingr-img d-block">
+              <img :alt="i" :src="imageURL(i)" class="ingr-img d-block">
               <div class="d-block">{{ i }}</div>
             </a>
           </b-list-group-item>
