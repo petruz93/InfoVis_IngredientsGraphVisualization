@@ -1,7 +1,7 @@
 <template>
   <b-container>
-    <b-row class="justify-content-sm-center">
-      <b-col md="8">
+    <b-row cols="1" cols-sm="2" cols-md="12"  class="mb-2">
+      <b-col cols="12" sm="8" md="9" lg="10" align-self="center">
         <v-select multiple
           v-model="selectedIngredients"
           label="strIngredient"
@@ -22,10 +22,16 @@
           </template>
         </v-select>
       </b-col>
+      <b-col cols="12" sm="4" md="3" lg="2" align-self="center">
+        <b-button variant="success" @click="searchMeals(selectedIngredients)">
+          <b-icon icon="search" class="mr-2"></b-icon>
+          <span>Search</span>
+        </b-button>
+      </b-col>
     </b-row>
-      <!-- <b-button @click="submitData(selectedIngredients)" class="my-3">Submit</b-button> -->
-    <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients>
-    <Result :meals=mealData />
+      
+    <SelectedIngredients v-if="selectedIngredients.length" :selectedList="selectedIngredients"></SelectedIngredients>
+    <Result v-if="searchFlag" :meals=meals></Result>
   </b-container>
 </template>
 
@@ -33,7 +39,7 @@
 <script>
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
-import { getSmallIngrImageURL } from '@/themealdbConnector.js'
+import { getSmallIngrImageURL, getMealsByIngredient } from '@/themealdbConnector.js'
 
 export default {
   name: 'SearchBar',
@@ -48,33 +54,45 @@ export default {
     ingredients: {
       required: true,
       type: Array,
-      default: () => {}
+      default: () => []
     }
   },
 
   data () {
     return {
-      mealData: [],
-      selectedIngredients: []
+      selectedIngredients: [],
+      meals: [],
+      searchFlag: false
     }
   },
 
   methods: {
     imageURL(ingr) {
       return getSmallIngrImageURL(ingr)
+    },
+    async searchMeals(selectedd) {
+      try {
+        const ingrList = new Array(...selectedd)
+        let i = ingrList.shift()
+        let result = await getMealsByIngredient(i)
+        while (ingrList.length) {
+          i = ingrList.shift()
+          let newMeals = await getMealsByIngredient(i)
+          result = result.filter(x => newMeals.includes(x)) // intersection
+        }
+        if (result && result.length) {
+          this.meals = result
+          this.selectedIngredients = []
+        } else {
+          this.meals = []
+        }
+        this.searchFlag = true
+      } catch (error) {
+        console.log('Error on searchMeals function:', error)
+      }
     }
-    // async submitData (ingredient) {
-    //   try {
-    //   this.mealData = await getMealsByIngredient(ingredient)
-    //   } catch(error) {
-    //     console.log('Error on submitData function:', error)
-    //   }
-    // },
     // addToSelectedList(ingr) {
     //   this.$emit('add-ingredient', ingr)
-    // },
-    // async fetchOptions (search) {
-    //    return this.ingredients[search]
     // }
   }
 }
