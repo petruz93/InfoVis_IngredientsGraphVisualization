@@ -13,11 +13,16 @@
           @input="submitData"
             -->
           <template #option="{ strIngredient }">
-            <b-avatar :src="imageURL(strIngredient)"
+            <b-img-lazy :src="imageURL(strIngredient)"
+                        rounded="circle"
+                        blank-color="#f8f9fa"
+                        width="55%"
+                        class="mr-2 border border-dark bg-light"></b-img-lazy>
+            <!-- <b-avatar :src="imageURL(strIngredient)"
                       icon="question"
                       variant="light"
                       size="lg"
-                      class="mr-2 border border-dark"></b-avatar>
+                      class="mr-2 border border-dark"></b-avatar> -->
             <span class="mr-auto">{{ strIngredient }}</span>
           </template>
         </v-select>
@@ -45,9 +50,9 @@ export default {
   name: 'SearchBar',
 
   components: {
+    vSelect,
     SelectedIngredients: () => import('@/components/SelectedIngredients'),
-    Result: () => import('@/components/Result.vue'),
-    vSelect
+    Result: () => import('@/components/Result.vue')
   },
 
   props: {
