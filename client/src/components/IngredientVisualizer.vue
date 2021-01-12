@@ -1,11 +1,11 @@
 <template>
   <div>
-    <b-list-group flush>
+    <b-list-group>
       <b-list-group-item v-for="(list, letter) in alphabeticalIngredients" :key=letter>
         <h3 class="text-left">{{ letter }}</h3>
         <b-list-group horizontal class="overflow-auto">
-          <b-list-group-item v-for="i in list" :key="i">
-            <a href="#" class="text-dark">
+          <b-list-group-item v-for="i in list" :key="i" class="inner-list-item">
+            <a href="#" class="text-theme">
               <b-img-lazy :alt="i" :src="imageURL(i)" class="ingr-img d-block"></b-img-lazy>
               <div class="d-block">{{ i }}</div>
             </a>
@@ -64,4 +64,8 @@ export default {
   height: 100px;
   width: 100px;
 }
-</style>
+
+.inner-list-item {
+  background-color: var(--black-474747);
+}
+</style>  

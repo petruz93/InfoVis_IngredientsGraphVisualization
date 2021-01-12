@@ -1,51 +1,16 @@
 <template>
-  <b-container fluid="md">
-    <!-- <div class="m-3 px-5">
-      <label for="filt-ingr">Search meals</label><br>
-      <b-input v-model="ingredient"
-        id="filt-ingr"
-        placeholder="Search your ingredients"
-      ></b-input>
-      <b-button @click="fetchData(ingredient)" class="my-3">Submit</b-button>
-    </div> -->
+  <b-container fluid="lg">
     <!-- <SearchBar :ingredients=allIngredients @add-ingredient="updateList"></SearchBar> -->
     <SearchBar :ingredients=allIngredients></SearchBar>
-    <!-- <select v-model="ingredient">
-      <option value="" selected hidden>Select one ingredient</option>
-      <option v-for="i in allIngredients"
-        :key=i.idIngredient
-        >{{ i.strIngredient }}</option>
-    </select> -->
 
     <!-- <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients> -->
-
     <!-- <Result 
       :meals=mealData>
     </Result> -->
 
-<!-- visualizzazione degli ingredienti in ordine alfabetico -->
     <hr>
+    <!-- visualizzazione degli ingredienti in ordine alfabetico -->
     <IngredientVisualizer :ingredients=allIngredients></IngredientVisualizer>
-
-<!-- visualizzazione degli ingredienti. provvisoria. -->
-    <!-- <hr>
-    <div>
-      <div v-if="!filteredIngredients.length && allIngredients.length">
-        <em>No ingredients found...</em>
-      </div>
-      <ul>
-        <li v-for="i in filteredIngredients" :key="i.idIngredient"
-            @click="updateList(i.strIngredient)">
-          <div>
-            {{ i.strIngredient }}
-          </div>
-          <div>
-            <img :alt="i.strIngredient" :src="imageURL(i.strIngredient)"
-                class="ingr-img border border-secondary">
-          </div>
-        </li>
-      </ul>
-    </div> -->
   </b-container>
 </template>
 
@@ -60,7 +25,7 @@ export default {
     SearchBar: () => import('@/components/SearchBar'),
     // SelectedIngredients: () => import('@/components/SelectedIngredients'),
     // Result: () => import('@/components/Result.vue'),
-    IngredientVisualizer: () => import('@/components/IngredientVisualizer')
+    IngredientVisualizer: () => import('@/components/IngredientVisualizer'),
   },
 
   data () {

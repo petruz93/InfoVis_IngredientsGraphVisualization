@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-auto">
     <b-list-group horizontal>
-      <b-list-group-item v-for="i in selectedList" :key="i" class="container-img">
+      <b-list-group-item v-for="i in selectedList" :key="i" variant="dark">
         <img :alt="i" :src="imageURL(i)" class="ingr-img d-block">
         <b-button-close text-variant="danger" class="d-block"
           @click="removeElem(i)">&times;</b-button-close>
