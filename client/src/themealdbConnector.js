@@ -20,7 +20,7 @@ async function getMealsByIngredient(ingredient) {
 async function getMealDetailsById(id) {
   try {
     const res = await getBaseURL().get(`lookup.php?i=${id}`)
-    return res.data.meals
+    return res.data.meals[0]
   } catch (error) {
     console.log(error)
     throw error
