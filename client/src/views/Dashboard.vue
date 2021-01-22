@@ -1,8 +1,9 @@
 <template>
   <b-container fluid="lg">
     <!-- <SearchBar :ingredients=allIngredients @add-ingredient="updateList"></SearchBar> -->
-    <SearchBar :ingredients=allIngredients></SearchBar>
-
+    <SearchBar :ingredients=allIngredients @search-meals="searchMeals"></SearchBar>
+    
+    <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult>
     <!-- <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients> -->
     <!-- <Result 
       :meals=mealData>
@@ -16,7 +17,7 @@
 
 
 <script>
-import { getAllIngredients } from '@/themealdbConnector.js' 
+import { getMealsByIngredient, getMealDetailsById, getAllIngredients } from '@/themealdbConnector.js'
 
 export default {
   name: 'Dashboard',
@@ -26,12 +27,16 @@ export default {
     // SelectedIngredients: () => import('@/components/SelectedIngredients'),
     // Result: () => import('@/components/Result.vue'),
     IngredientVisualizer: () => import('@/components/IngredientVisualizer'),
+    SearchResult: () => import('@/components/SearchResult.vue'),
   },
 
   data () {
     return {
       // mealData: [],
       allIngredients: [],
+      searchFlag: false,
+      searched: false,
+      meals: []
       // selectedIngredients: [],
       // ingredient: ''
     }
@@ -39,9 +44,8 @@ export default {
 
   created () {
     console.log('App loaded'),
-    this.fetchIngredients()
+    this.fetchAllIngredients()
   },
-
   methods: {
     // async fetchData (ingredient) {
     //   try {
@@ -50,7 +54,7 @@ export default {
     //     console.log('Error on fetchData function:', error)
     //   }
     // },
-    async fetchIngredients() {
+    async fetchAllIngredients() {
       try {
         this.allIngredients = await getAllIngredients()
         this.allIngredients.sort((a,b) => a.strIngredient.localeCompare(b.strIngredient))
@@ -58,6 +62,34 @@ export default {
         console.log('Error on fetchIngredients function:', error)
       }
     },
+    async searchMeals(selIngrs) {
+      this.searchFlag = true
+      try {
+        console.log('selIngrs: ', selIngrs)
+        const ingredients = new Array(...selIngrs)
+        let i = ingredients.shift()
+        let result = await getMealsByIngredient(i)
+        while (ingredients.length) {
+          i = ingredients.shift()
+          let newMeals = await getMealsByIngredient(i)
+          result = result.filter(x => newMeals.includes(x)) // intersection
+        }
+        if (result && result.length) {
+          // for each meal it makes async and parallel requests for datails
+          result = await Promise.all(result.map(x => getMealDetailsById(x.idMeal)))
+          this.meals = result
+          this.selectedIngredients = []
+        } else {
+          this.meals = []
+        }
+        setTimeout(() => {
+          this.searchFlag = false
+          this.searched = true
+        })
+      } catch (error) {
+        console.log('Error on searchMeals function:', error)
+      }
+    }
   //   imageURL(ingr) {
   //     return getSmallIngrImageURL(ingr)
   //   },

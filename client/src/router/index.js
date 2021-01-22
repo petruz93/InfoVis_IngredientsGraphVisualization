@@ -13,19 +13,9 @@ const routes = [
     component: Dashboard
   },
   {
-    path: '/visitors_per_hour',
-    name: 'VisitorsPerHour',
-    component: VisitorsPerHour
-  },
-  {
-    path: '/attr_power',
-    name: 'AttractionPower',
-    component: AttractionPower
-  },
-  {
-    path: '/playback',
-    name: 'PlayBack',
-    component: () => import(/* webpackChunkName: "playback" */ '../views/PlayBack.vue')
+    path: '/results',
+    name: 'Results',
+    component: Results
   },
 ]
 

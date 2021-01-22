@@ -30,17 +30,17 @@
         </v-select>
       </b-col>
       <b-col cols="12" sm="4" md="3" align-self="center">
-        <b-button variant="primary" @click="searchMeals(selectedIngredients)">
+        <!-- <b-button variant="primary" @click="searchMeals(selectedIngredients)"> -->
+        <b-button variant="primary" @click="onClickSearch(selectedIngredients)">
           <b-icon icon="search" class="mr-2"></b-icon>
           <span>Find Recipes</span>
         </b-button>
       </b-col>
     </b-row>
-      
     <SelectedIngredients v-if="selectedIngredients.length" :selectedList="selectedIngredients"></SelectedIngredients>
   </b-container>
-  <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult>
-  <SearchFilter :meals=meals></SearchFilter>
+  <!-- <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult> -->
+  <!-- <SearchFilter :meals=meals></SearchFilter> -->
 </div>
 </template>
 
@@ -48,7 +48,7 @@
 <script>
 import vSelect from 'vue-select'
 // import 'vue-select/dist/vue-select.css'
-import { getSmallIngrImageURL, getMealsByIngredient, getMealDetailsById } from '@/themealdbConnector.js'
+import { getSmallIngrImageURL } from '@/themealdbConnector.js'
 
 export default {
   name: 'SearchBar',
@@ -56,8 +56,8 @@ export default {
   components: {
     vSelect,
     SelectedIngredients: () => import('@/components/SelectedIngredients'),
-    SearchResult: () => import('@/components/SearchResult.vue'),
-    SearchFilter: () => import('@/components/SearchFilter')
+    // SearchResult: () => import('@/components/SearchResult.vue'),
+    // SearchFilter: () => import('@/components/SearchFilter')
   },
 
   props: {
@@ -81,33 +81,36 @@ export default {
     imageURL(ingr) {
       return getSmallIngrImageURL(ingr)
     },
-    async searchMeals(selectedd) {
-      this.searchFlag = true
-      try {
-        const ingrList = new Array(...selectedd)
-        let i = ingrList.shift()
-        let result = await getMealsByIngredient(i)
-        while (ingrList.length) {
-          i = ingrList.shift()
-          let newMeals = await getMealsByIngredient(i)
-          result = result.filter(x => newMeals.includes(x)) // intersection
-        }
-        if (result && result.length) {
-          // for each meal it makes async and parallel requests for datails
-          result = await Promise.all(result.map(x => getMealDetailsById(x.idMeal)))
-          this.meals = result
-          this.selectedIngredients = []
-        } else {
-          this.meals = []
-        }
-        setTimeout(() => {
-          this.searchFlag = false
-          this.searched = true
-        })
-      } catch (error) {
-        console.log('Error on searchMeals function:', error)
-      }
-    }
+    onClickSearch (selIngrs) {
+        this.$emit('search-meals', selIngrs)
+    },
+    // async searchMeals(selectedd) {
+    //   this.searchFlag = true
+    //   try {
+    //     const ingrList = new Array(...selectedd)
+    //     let i = ingrList.shift()
+    //     let result = await getMealsByIngredient(i)
+    //     while (ingrList.length) {
+    //       i = ingrList.shift()
+    //       let newMeals = await getMealsByIngredient(i)
+    //       result = result.filter(x => newMeals.includes(x)) // intersection
+    //     }
+    //     if (result && result.length) {
+    //       // for each meal it makes async and parallel requests for datails
+    //       result = await Promise.all(result.map(x => getMealDetailsById(x.idMeal)))
+    //       this.meals = result
+    //       this.selectedIngredients = []
+    //     } else {
+    //       this.meals = []
+    //     }
+    //     setTimeout(() => {
+    //       this.searchFlag = false
+    //       this.searched = true
+    //     })
+    //   } catch (error) {
+    //     console.log('Error on searchMeals function:', error)
+    //   }
+    // }
     // addToSelectedList(ingr) {
     //   this.$emit('add-ingredient', ingr)
     // }

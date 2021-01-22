@@ -23,6 +23,10 @@
   },
   "homepage": "https://github.com/petruz93/InfoVis_IngredientsGraphVisualization#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "bootstrap-vue": "^2.21.2",
+    "express": "^4.17.1",
+    "sass": "^1.32.4",
+    "sass-loader": "^10.1.1",
+    "vue-select": "^3.11.2"
   }
 }
