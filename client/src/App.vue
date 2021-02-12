@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <img alt="App logo" src="@/assets/recipes-icon.png">
+    <a href="/">
+      <img alt="App logo" src="@/assets/recipes-icon.png">
+    </a>
     <Dashboard msg="Welcome to RecipAdvisor"></Dashboard>
   </div>
 </template>

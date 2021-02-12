@@ -2,7 +2,7 @@
   <b-container fluid="lg">
     <!-- <SearchBar :ingredients=allIngredients @add-ingredient="updateList"></SearchBar> -->
     <SearchBar :ingredients=allIngredients @search-meals="searchMeals"></SearchBar>
-    
+    <SearchFilter @click="updateMealCategories" :mealCategories=mealCategories></SearchFilter>
     <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult>
     <!-- <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients> -->
     <!-- <Result 
@@ -17,7 +17,7 @@
 
 
 <script>
-import { getMealsByIngredient, getMealDetailsById, getAllIngredients } from '@/themealdbConnector.js'
+import { getMealsByIngredient, getMealDetailsById, getAllIngredients, getAllCategories } from '@/themealdbConnector.js'
 
 export default {
   name: 'Dashboard',
@@ -25,9 +25,9 @@ export default {
   components: {
     SearchBar: () => import('@/components/SearchBar'),
     // SelectedIngredients: () => import('@/components/SelectedIngredients'),
-    // Result: () => import('@/components/Result.vue'),
     IngredientVisualizer: () => import('@/components/IngredientVisualizer'),
     SearchResult: () => import('@/components/SearchResult.vue'),
+    SearchFilter: () => import('@/components/SearchFilter.vue'),
   },
 
   data () {
@@ -36,24 +36,18 @@ export default {
       allIngredients: [],
       searchFlag: false,
       searched: false,
-      meals: []
+      meals: [],
+      mealCategories: []
       // selectedIngredients: [],
       // ingredient: ''
     }
   },
-
   created () {
     console.log('App loaded'),
-    this.fetchAllIngredients()
+    this.fetchAllIngredients(),
+    this.updateMealCategories()
   },
   methods: {
-    // async fetchData (ingredient) {
-    //   try {
-    //   this.mealData = await getMealsByIngredient(ingredient)
-    //   } catch(error) {
-    //     console.log('Error on fetchData function:', error)
-    //   }
-    // },
     async fetchAllIngredients() {
       try {
         this.allIngredients = await getAllIngredients()
@@ -79,6 +73,7 @@ export default {
           result = await Promise.all(result.map(x => getMealDetailsById(x.idMeal)))
           this.meals = result
           this.selectedIngredients = []
+          this.updateMealCategories()
         } else {
           this.meals = []
         }
@@ -88,6 +83,29 @@ export default {
         })
       } catch (error) {
         console.log('Error on searchMeals function:', error)
+      }
+    },
+    async updateMealCategories() {
+      if (this.meals.length>0) {
+        try {
+          const categories = this.meals.map(x => x.strCategory)
+          const categorySet = new Set(categories)
+          console.log(categorySet)
+          this.mealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
+          // this.mealCategories = selMeals.map(x => x.strCategory)
+        } catch (error) {
+          console.log('Error while reading categories')
+        }
+      }
+      else {
+        try {
+          const categories = await getAllCategories().map(x => x.strCategory)
+          const categorySet = new Set(categories)
+          console.log(categorySet)
+          this.mealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
+        } catch (error) {
+          console.log('Error while fetching category list')
+        }
       }
     }
   //   imageURL(ingr) {

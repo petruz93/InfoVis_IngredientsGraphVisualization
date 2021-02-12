@@ -50,6 +50,7 @@
                       Excepteur sint occaecat cupidatat non proident, 
                       sunt in culpa qui officia deserunt mollit anim id est laborum. -->
                     </b-card-text>
+                    <div class="text-right text-danger"><strong>n</strong> ingr. mancanti</div>
                     <div>
                       <b-list-group horizontal class="overflow-auto">
                         <b-list-item v-for="url in ingredientURLs(meal)" :key="url">
@@ -98,21 +99,36 @@ export default {
   },
 
   data () {
-    return {}
+    return {
+      mealIngredients: {
+        type: Object,
+        default: () => {}
+      }
+    }
   },
 
   methods: {
+    // ingredients(meal) {
+    //   const result = {}
+    // },
+    // onClickSearch (event) {
+    //   this.$emit
+    // },
     ingredientURLs(meal) {
-      const urls = {}
+      const result = {}
+      // TODO da finire
+      result.num = 0
       let i = 1
       while (i <= 20) {   // 20 is the max num of ingredients for any meal
         let currIngr = 'strIngredient' + i
-        if (meal[currIngr].length) {  // if it's not empty string
-          urls[currIngr] = getSmallIngrImageURL(meal[currIngr])
+        let name = meal[currIngr]
+        if (name!== null && name.length) {  // if string isn't null or empty
+          result[name]
+          result[currIngr] = getSmallIngrImageURL(meal[currIngr])
         }
         i++
       }
-      return urls
+      return result
     }
   }
 }
