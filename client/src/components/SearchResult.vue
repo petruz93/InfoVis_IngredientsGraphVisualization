@@ -19,7 +19,7 @@
 
           <h4>Meals found:</h4>
           <b-card-group deck class="d-block">
-            <b-card v-for="meal in meals" :key="meal.strMeal"
+            <b-card v-for="meal in filteredMeals" :key="meal.strMeal"
               no-body class="my-3"
             >
               <b-row no-gutters>
@@ -91,6 +91,18 @@ export default {
       type: Array,
       default: () => []
     },
+    selectedCategories: {
+      type: Array,
+      default: () => []
+    },
+    selectedAreas: {
+      type: Array,
+      default: () => []
+    },
+    selectedIngrs: {
+      type: Array,
+      default: () => []
+    }
     // mealIngredients: {
     //   required: true,
     //   type: Array,
@@ -106,6 +118,16 @@ export default {
       }
     }
   },
+  
+  computed: {
+    filteredMeals () {
+      // if any filter is empty that filter is not applied
+      return this.meals.filter(x => 
+        (this.selectedCategories.length? this.selectedCategories.includes(x.strCategory) : true) &&
+        (this.selectedAreas.length? this.selectedAreas.includes(x.strArea) : true)
+      )
+    }
+  },
 
   methods: {
     // ingredients(meal) {
@@ -117,17 +139,18 @@ export default {
     ingredientURLs(meal) {
       const result = {}
       // TODO da finire
-      result.num = 0
       let i = 1
       while (i <= 20) {   // 20 is the max num of ingredients for any meal
         let currIngr = 'strIngredient' + i
         let name = meal[currIngr]
-        if (name!== null && name.length) {  // if string isn't null or empty
+        if (name!== null && name.length) {  // if name of ingr is not null or empty
           result[name]
           result[currIngr] = getSmallIngrImageURL(meal[currIngr])
         }
         i++
       }
+      result.missing = i - selectedIngrs.length
+      this.result = result
       return result
     }
   }

@@ -2,8 +2,21 @@
   <b-container fluid="lg">
     <!-- <SearchBar :ingredients=allIngredients @add-ingredient="updateList"></SearchBar> -->
     <SearchBar :ingredients=allIngredients @search-meals="searchMeals"></SearchBar>
-    <SearchFilter @click="updateMealCategories" :mealCategories=mealCategories></SearchFilter>
-    <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult>
+    <SearchFilter @click="updateMealData" 
+      :allMealCategories=allMealCategories 
+      :allMealAreas=allMealAreas 
+      :searchMealCategories=searchMealCategories
+      :searchMealAreas=searchMealAreas
+      :searched=searched
+      @select-category="selectCategory"
+      @select-area="selectArea">
+    </SearchFilter>
+    <SearchResult v-if="searched" 
+      :searching=searchFlag :meals=meals 
+      :selectedCategories=selectedMealCategories 
+      :selectedAreas=selectedMealAreas
+      :selectedIngrs=selectedIngredients>
+    </SearchResult>
     <!-- <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients> -->
     <!-- <Result 
       :meals=mealData>
@@ -17,7 +30,7 @@
 
 
 <script>
-import { getMealsByIngredient, getMealDetailsById, getAllIngredients, getAllCategories } from '@/themealdbConnector.js'
+import { getMealsByIngredient, getMealDetailsById, getAllIngredients, getAllCategories, getAllAreas } from '@/themealdbConnector.js'
 
 export default {
   name: 'Dashboard',
@@ -37,15 +50,28 @@ export default {
       searchFlag: false,
       searched: false,
       meals: [],
-      mealCategories: []
-      // selectedIngredients: [],
+      allMealCategories: [],
+      selectedMealCategories: [],
+      allMealAreas: [],
+      selectedMealAreas: [],
+      selectedIngredients: [],
       // ingredient: ''
     }
   },
   created () {
     console.log('App loaded'),
     this.fetchAllIngredients(),
-    this.updateMealCategories()
+    this.updateMealData()
+  },
+  computed: {
+    searchMealCategories () {
+      const categorySet = new Set(this.meals.map(x => x.strCategory))
+      return Array.from(categorySet).sort((a,b) => a.localeCompare(b))
+    },
+    searchMealAreas () {
+      const areaSet = new Set(this.meals.map(x => x.strArea))
+      return Array.from(areaSet).sort((a,b) => a.localeCompare(b))
+    }
   },
   methods: {
     async fetchAllIngredients() {
@@ -60,6 +86,7 @@ export default {
       this.searchFlag = true
       try {
         console.log('selIngrs: ', selIngrs)
+        this.selectedIngredients = new Array(...selIngrs)
         const ingredients = new Array(...selIngrs)
         let i = ingredients.shift()
         let result = await getMealsByIngredient(i)
@@ -69,11 +96,10 @@ export default {
           result = result.filter(x => newMeals.includes(x)) // intersection
         }
         if (result && result.length) {
-          // for each meal it makes async and parallel requests for datails
+          // for each meal it makes async and parallel requests for its datails
           result = await Promise.all(result.map(x => getMealDetailsById(x.idMeal)))
           this.meals = result
-          this.selectedIngredients = []
-          this.updateMealCategories()
+          // this.selectedIngredients = []
         } else {
           this.meals = []
         }
@@ -85,29 +111,25 @@ export default {
         console.log('Error on searchMeals function:', error)
       }
     },
-    async updateMealCategories() {
-      if (this.meals.length>0) {
-        try {
-          const categories = this.meals.map(x => x.strCategory)
-          const categorySet = new Set(categories)
-          console.log(categorySet)
-          this.mealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
-          // this.mealCategories = selMeals.map(x => x.strCategory)
-        } catch (error) {
-          console.log('Error while reading categories')
-        }
+    // Child event handling
+    selectCategory (selectedCategories) {
+      this.selectedMealCategories = selectedCategories
+    },
+    selectArea (selectedAreas) {
+      this.selectedMealAreas = selectedAreas
+    },
+    async updateMealData() {
+      try {
+        const categories = await getAllCategories()
+        const areas = await getAllAreas()
+        const categorySet = new Set(categories.map(x => x.strCategory))
+        const areaSet = new Set(areas.map(x => x.strArea))
+        this.allMealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
+        this.allMealAreas = Array.from(areaSet).sort((a,b) => a.localeCompare(b))
+      } catch (error) {
+        console.log('Error while fetching category list\n', error)
       }
-      else {
-        try {
-          const categories = await getAllCategories().map(x => x.strCategory)
-          const categorySet = new Set(categories)
-          console.log(categorySet)
-          this.mealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
-        } catch (error) {
-          console.log('Error while fetching category list')
-        }
-      }
-    }
+    },
   //   imageURL(ingr) {
   //     return getSmallIngrImageURL(ingr)
   //   },
