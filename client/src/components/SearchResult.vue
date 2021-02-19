@@ -149,7 +149,7 @@ export default {
         }
         i++
       }
-      result.missing = i - selectedIngrs.length
+      // result.missing = i - selectedIngrs.length
       this.result = result
       return result
     }
