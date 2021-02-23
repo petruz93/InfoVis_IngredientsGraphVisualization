@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <a href="/">
-      <img alt="App logo" src="@/assets/recipes-icon.png">
+    <a role="button" aria-pressed="true">
+      <img alt="App logo" src="@/assets/recipes-icon.png" @click="onClickReset('idle')">
     </a>
-    <Dashboard msg="Welcome to RecipAdvisor"></Dashboard>
+    <Dashboard :state=state></Dashboard>
   </div>
 </template>
 
@@ -14,6 +14,17 @@ export default {
   name: 'App',
   components: {
     Dashboard
+  },
+  data() {
+    return {
+      state: "idle"
+    }
+  },
+  methods: {
+    onClickReset(state) {
+      this.state = ''
+      this.state = state
+    }
   }
 }
 </script>

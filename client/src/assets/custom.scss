@@ -20,7 +20,7 @@ $gray-800:      #343a40               !default;
 $gray-900:      #212529               !default;
 $black:         #000                  !default;
 $black-141414:  #141414               !default;
-$black-333333:  #292929              !default;
+$black-333333:  #292929               !default;
 $black-474747:  #3D3D3D               !default;
 $black-055:       rgba(#141414, 0.55) !default;
 
@@ -44,7 +44,7 @@ $blue:          #007bff !default;
 $indigo:        #6610f2 !default;
 $purple:        #6f42c1 !default;
 $pink:          #e83e8c !default;
-$red:           #dc3545 !default;
+$red:           #ff0000 !default;
 $orange:        #fd7e14 !default;
 $yellow:        #ffc107 !default;
 $green:         #28a745 !default;
@@ -55,6 +55,7 @@ $green-theme:   #56B36D !default;
 $dark-green:    #275431 !default;
 $yellow-theme:  #FEFFA3 !default;
 $orange-theme:  #FF9447 !default;
+$red-theme:     #dc3545 !default;
 
 $colors: () !default;
 $colors: map-merge(
@@ -77,6 +78,7 @@ $colors: map-merge(
     "dark-green":    $dark-green,
     "yellow-theme":  $yellow-theme,
     "orange-theme":  $orange-theme,
+    "red-theme":     $red-theme,
     "black-141414":  $black-141414,
     "black-333333":  $black-333333,
     "black-474747":  $black-474747,
@@ -90,7 +92,8 @@ $secondary:     $blue-theme !default;
 $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
-$danger:        $red !default;
+$danger:        $red-theme !default;
+$delete:        $red  !default;
 $light:         $yellow-theme !default;
 $dark:          $black-141414 !default;
 
@@ -103,6 +106,7 @@ $theme-colors: map-merge(
     "info":       $info,
     "warning":    $warning,
     "danger":     $danger,
+    "delete":     $delete,
     "light":      $light,
     "dark":       $dark
   ),

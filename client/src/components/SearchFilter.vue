@@ -6,7 +6,7 @@
         label="Select the categories you are interested in!"
         v-slot="{ ariaDescribedby }"
       >
-        <div v-if=searched>
+        <div v-if="state==='searched'">
           <b-form-checkbox-group
             align="left"
             v-model="selectedCategories"
@@ -40,7 +40,7 @@
         label="Select the areas from which you want your recipes!"
         v-slot="{ ariaDescribedby }"
       >
-        <div v-if=searched>
+        <div v-if="state==='searched'">
           <b-form-checkbox-group
             align="left"
             v-model="selectedAreas"
@@ -77,9 +77,9 @@
 export default {
   name: 'SearchFilter',
   props: {
-    searched: {
-      type: Boolean,
-      default: false
+    state: {
+      required: true,
+      type: String
     },
     allMealCategories: {
       required: true,

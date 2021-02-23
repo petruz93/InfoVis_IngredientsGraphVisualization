@@ -5,10 +5,10 @@
         <h3 class="text-left">{{ letter }}</h3>
         <b-list-group horizontal class="overflow-auto">
           <b-list-group-item v-for="i in list" :key="i" class="inner-list-item">
-            <a href="#" class="text-theme">
-              <b-img-lazy :alt="i" :src="imageURL(i)" class="ingr-img d-block"></b-img-lazy>
-              <div class="d-block">{{ i }}</div>
-            </a>
+              <a @click=searchByIngredient(i) role="button" aria-pressed="true" class="text-theme">
+                <b-img-lazy :alt="i" :src="imageURL(i)" class="ingr-img d-block"></b-img-lazy>
+              </a>
+              <div class="d-block"><a @click=searchByIngredient(i) role="button" aria-pressed="true">{{ i }}</a></div>
           </b-list-group-item>
         </b-list-group>
       </b-list-group-item>
@@ -34,13 +34,6 @@ export default {
   data() {
     return {}
   },
-
-  methods: {
-    imageURL(ingr) {
-      return getSmallIngrImageURL(ingr)
-    }
-  },
-
   computed: {
     alphabeticalIngredients () {
       const abIngredients = new Object()
@@ -53,6 +46,14 @@ export default {
         abIngredients[initial].push(ingrName)
       }
       return abIngredients
+    }
+  },
+  methods: {
+    imageURL(ingr) {
+      return getSmallIngrImageURL(ingr)
+    },
+    searchByIngredient(ingr) {
+      this.$emit('ingr-search', ingr, "searched")
     }
   }
 }

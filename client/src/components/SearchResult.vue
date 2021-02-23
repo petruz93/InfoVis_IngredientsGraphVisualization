@@ -24,7 +24,9 @@
             >
               <b-row no-gutters>
                 <b-col cols="12" sm="6" md="5">
-                  <b-card-img :src="meal.strMealThumb" left width="100%" class="rounded-0"></b-card-img>
+                  <a @click=expandRecipe(meal) role="button" aria-pressed="true">
+                    <b-card-img :src="meal.strMealThumb" left width="100%" class="rounded-0"></b-card-img>
+                  </a>
                 </b-col>
                 <b-col cols="12" sm="6" md="7">
                   <b-card-body class="text-left">
@@ -35,7 +37,7 @@
                         </b-col>
                       <b-col cols="2" class="text-right border">Veg</b-col>
                     </b-row> -->
-                    <b-card-title style="color: var(--green-theme)">{{ meal.strMeal }}</b-card-title>
+                    <b-card-title style="color: var(--green-theme)"><a @click=expandRecipe(meal) role="button" aria-pressed="true">{{ meal.strMeal }}</a></b-card-title>
                     <b-card-sub-title class="mb-2"><em>&mdash; {{ meal.strCategory }}</em></b-card-sub-title>
                     <b-card-text>
                       <div>
@@ -50,19 +52,21 @@
                       Excepteur sint occaecat cupidatat non proident, 
                       sunt in culpa qui officia deserunt mollit anim id est laborum. -->
                     </b-card-text>
-                    <div class="text-right text-danger"><strong>n</strong> ingr. mancanti</div>
+                    <div>To make this recipe you need:</div>
                     <div>
                       <b-list-group horizontal class="overflow-auto">
-                        <b-list-item v-for="url in ingredientURLs(meal)" :key="url">
-                          <b-img :src="url"
+                        <b-list-item v-for="i in getIngredientURLs(meal)" :key="i">
+                          <b-img :src="i.url"
                             rounded="circle"
                             blank-color="#FEFFA3"
                             width="50%"
-                            class="mr-2 border border-dark"
+                            class="mr-2 border"
+                            :class="i.isSelected ? 'border-primary' : 'border-danger'"
                           ></b-img>
                         </b-list-item>
                       </b-list-group>
                     </div>
+                    <div class="text-right text-danger"><strong>{{ meal.missing }}</strong> missing ingredients</div>
                   </b-card-body>
                 </b-col>
               </b-row>
@@ -102,11 +106,11 @@ export default {
     selectedIngrs: {
       type: Array,
       default: () => []
-    }
-    // mealIngredients: {
+    },
+    // state: {
     //   required: true,
-    //   type: Array,
-    //   default: () => []
+    //   type: String,
+    //   default: () => "idle"
     // }
   },
 
@@ -114,7 +118,7 @@ export default {
     return {
       mealIngredients: {
         type: Object,
-        default: () => {}
+        default: () => []
       }
     }
   },
@@ -130,28 +134,55 @@ export default {
   },
 
   methods: {
-    // ingredients(meal) {
-    //   const result = {}
-    // },
-    // onClickSearch (event) {
-    //   this.$emit
-    // },
-    ingredientURLs(meal) {
-      const result = {}
-      // TODO da finire
+    getIngredientURLs(meal) {
+      const selSet = new Set()
+      const missSet = new Set()
+      const selArray = []
+      const missArray = []
       let i = 1
       while (i <= 20) {   // 20 is the max num of ingredients for any meal
         let currIngr = 'strIngredient' + i
         let name = meal[currIngr]
-        if (name!== null && name.length) {  // if name of ingr is not null or empty
-          result[name]
-          result[currIngr] = getSmallIngrImageURL(meal[currIngr])
+          .toLowerCase()
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')
+        if (name===null || name.length==0) {  // if name of ingr is null or empty, stop
+          break
+        }
+        let temp = {}
+        temp['name'] = name
+        temp['url'] = getSmallIngrImageURL(name)
+        if (this.isSelected(name)) {
+          if (!selSet.has(name)) {
+            selSet.add(name)
+            temp['isSelected'] = true
+            selArray.push(temp)
+          }
+        } else {
+          if (!missSet.has(name)) {
+            missSet.add(name)
+            temp['isSelected'] = false
+            missArray.push(temp)
+          }
         }
         i++
       }
-      // result.missing = i - selectedIngrs.length
-      this.result = result
+      const result = new Array(...selArray, ...missArray)
+      meal.missing = result.length - this.selectedIngrs.length
+      this.mealIngredients = result
       return result
+    },
+    isSelected(x) {
+      // const capitalized = x
+      //   .toLowerCase()
+      //   .split(' ')
+      //   .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      //   .join(' ')
+      return this.selectedIngrs.includes(x)
+    },
+    expandRecipe(meal) {
+      this.$emit('expand-recipe', meal, "expanded")
     }
   }
 }

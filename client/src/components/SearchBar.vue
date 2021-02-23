@@ -4,10 +4,10 @@
     <b-row cols="1" cols-sm="2" cols-md="12"  class="mb-2">
       <b-col cols="12" sm="8" md="9" align-self="center">
         <v-select multiple
-          v-model="selectedIngredients"
+          v-model="selectedIngredientsData"
           label="strIngredient"
           :reduce="i => i.strIngredient"
-          :options="ingredients"
+          :options="allIngredients"
           placeholder="Choose your ingredients"
         >
           <!--  
@@ -31,13 +31,18 @@
       </b-col>
       <b-col cols="12" sm="4" md="3" align-self="center">
         <!-- <b-button variant="primary" @click="searchMeals(selectedIngredients)"> -->
-        <b-button variant="primary" @click="onClickSearch(selectedIngredients)">
+        <b-button variant="primary" @click="onClickSearch(selectedIngredientsData)">
           <b-icon icon="search" class="mr-2"></b-icon>
           <span>Find Recipes</span>
         </b-button>
+        <b-button variant="primary" class="ml-3" @click="onClickClear()"> 
+          <span>Clear</span>
+        </b-button>
       </b-col>
     </b-row>
-    <SelectedIngredients v-if="selectedIngredients.length" :selectedList="selectedIngredients"></SelectedIngredients>
+    <b-row>
+    </b-row>
+    <SelectedIngredients v-if=selectedIngredientsData.length :selectedList=selectedIngredientsData></SelectedIngredients>
   </b-container>
   <!-- <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult> -->
   <!-- <SearchFilter :meals=meals></SearchFilter> -->
@@ -61,8 +66,12 @@ export default {
   },
 
   props: {
-    ingredients: {
+    allIngredients: {
       required: true,
+      type: Array,
+      default: () => []
+    },
+    selectedIngredients: {
       type: Array,
       default: () => []
     }
@@ -70,10 +79,9 @@ export default {
 
   data () {
     return {
-      selectedIngredients: [],
       meals: [],
       searchFlag: false,
-      searched: false
+      selectedIngredientsData: this.selectedIngredients
     }
   },
 
@@ -81,9 +89,13 @@ export default {
     imageURL(ingr) {
       return getSmallIngrImageURL(ingr)
     },
-    onClickSearch (selIngrs) {
-        this.$emit('search-meals', selIngrs)
+    onClickSearch(selIngrs) {
+        this.$emit('search-meals', selIngrs, "searched")
     },
+    onClickClear() {
+      this.selectedIngredientsData = []
+      this.$emit('reset-filters')
+    }
     // async searchMeals(selectedd) {
     //   this.searchFlag = true
     //   try {

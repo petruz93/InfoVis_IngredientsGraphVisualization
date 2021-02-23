@@ -1,30 +1,43 @@
 <template>
   <b-container fluid="lg">
-    <!-- <SearchBar :ingredients=allIngredients @add-ingredient="updateList"></SearchBar> -->
-    <SearchBar :ingredients=allIngredients @search-meals="searchMeals"></SearchBar>
-    <SearchFilter @click="updateMealData" 
+    <SearchBar 
+      :allIngredients=allIngredients
+      :selectedIngredients=selectedIngredients 
+      @search-meals=searchMeals
+      @reset-filters=resetFilters>
+    </SearchBar>
+    <SearchFilter
       :allMealCategories=allMealCategories 
       :allMealAreas=allMealAreas 
       :searchMealCategories=searchMealCategories
       :searchMealAreas=searchMealAreas
-      :searched=searched
-      @select-category="selectCategory"
-      @select-area="selectArea">
+      :state=state
+      @click=updateMealData 
+      @select-category=selectCategory
+      @select-area=selectArea>
     </SearchFilter>
-    <SearchResult v-if="searched" 
-      :searching=searchFlag :meals=meals 
+    <RecipeVisualizer
+      v-if="state==='expanded'" 
+      :meal=selectedMeal
+      :state=state>
+    </RecipeVisualizer>
+    <SearchResult
+      v-if="state==='searched'"
+      :searching=searchFlag
+      :meals=meals 
       :selectedCategories=selectedMealCategories 
       :selectedAreas=selectedMealAreas
-      :selectedIngrs=selectedIngredients>
+      :selectedIngrs=selectedIngredients
+      @expand-recipe=selectMeal>
     </SearchResult>
-    <!-- <SelectedIngredients :selectedList="selectedIngredients"></SelectedIngredients> -->
-    <!-- <Result 
-      :meals=mealData>
-    </Result> -->
 
     <hr>
     <!-- visualizzazione degli ingredienti in ordine alfabetico -->
-    <IngredientVisualizer :ingredients=allIngredients></IngredientVisualizer>
+    <IngredientVisualizer
+      v-if="state==='idle'"
+      :ingredients=allIngredients
+      @ingr-search=selectIngr>
+    </IngredientVisualizer>
   </b-container>
 </template>
 
@@ -41,6 +54,14 @@ export default {
     IngredientVisualizer: () => import('@/components/IngredientVisualizer'),
     SearchResult: () => import('@/components/SearchResult.vue'),
     SearchFilter: () => import('@/components/SearchFilter.vue'),
+    RecipeVisualizer: () => import('@/components/RecipeVisualizer.vue'),
+  },
+
+  props: {
+    state: {
+      required: true,
+      type: String
+    }
   },
 
   data () {
@@ -50,6 +71,7 @@ export default {
       searchFlag: false,
       searched: false,
       meals: [],
+      selectedMeal: {},
       allMealCategories: [],
       selectedMealCategories: [],
       allMealAreas: [],
@@ -71,9 +93,20 @@ export default {
     searchMealAreas () {
       const areaSet = new Set(this.meals.map(x => x.strArea))
       return Array.from(areaSet).sort((a,b) => a.localeCompare(b))
+    },
+  },
+  watch: {
+    onIdle() {
+      if(this.state==='idle') {
+        this.reset()
+      }
     }
   },
   methods: {
+    reset() {
+      this.meals = []
+      this.selectedIngredients = []
+    },
     async fetchAllIngredients() {
       try {
         this.allIngredients = await getAllIngredients()
@@ -82,18 +115,22 @@ export default {
         console.log('Error on fetchIngredients function:', error)
       }
     },
-    async searchMeals(selIngrs) {
+    async searchMeals(selIngrs, state) {
       this.searchFlag = true
       try {
-        console.log('selIngrs: ', selIngrs)
         this.selectedIngredients = new Array(...selIngrs)
         const ingredients = new Array(...selIngrs)
         let i = ingredients.shift()
         let result = await getMealsByIngredient(i)
+        console.log("i1 :: ", i);
+        console.log("primo ingrediente :: ", result);
         while (ingredients.length) {
           i = ingredients.shift()
           let newMeals = await getMealsByIngredient(i)
+          console.log("i1 :: ", i);
+          console.log("secondo ingrediente :: ", newMeals);
           result = result.filter(x => newMeals.includes(x)) // intersection
+          console.log("intersezione ::", result);
         }
         if (result && result.length) {
           // for each meal it makes async and parallel requests for its datails
@@ -105,7 +142,7 @@ export default {
         }
         setTimeout(() => {
           this.searchFlag = false
-          this.searched = true
+          this.state = state
         })
       } catch (error) {
         console.log('Error on searchMeals function:', error)
@@ -117,6 +154,18 @@ export default {
     },
     selectArea (selectedAreas) {
       this.selectedMealAreas = selectedAreas
+    },
+    selectMeal(selectedMeal, state) {
+      this.selectedMeal = selectedMeal
+      this.state = state
+    },
+    selectIngr(selectedIngr, state) {
+      this.selectedIngredients = []
+      this.selectedIngredients.push(selectedIngr)
+      this.searchMeals(this.selectedIngredients, state)
+    },
+    resetFilters () {
+      this.state = "idle"
     },
     async updateMealData() {
       try {
@@ -130,23 +179,7 @@ export default {
         console.log('Error while fetching category list\n', error)
       }
     },
-  //   imageURL(ingr) {
-  //     return getSmallIngrImageURL(ingr)
-  //   },
-  //   updateList(ingr) {
-  //     if (!this.selectedIngredients.includes(ingr))
-  //       this.selectedIngredients.push(ingr)
-  //     // else this.selectedIngredients.splice(this.selectedIngredients.indexOf(ingr), 1)
-  //   }
   },
-
-  // computed: {
-  //   filteredIngredients () {
-  //     return this.allIngredients.filter(i => {
-  //       return i.strIngredient.toLowerCase().includes(this.ingredient.toLowerCase())
-  //     })
-  //   }
-  // }
 }
 </script>
 
