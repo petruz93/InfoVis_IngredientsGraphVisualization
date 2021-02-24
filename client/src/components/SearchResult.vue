@@ -122,7 +122,6 @@ export default {
       }
     }
   },
-  
   computed: {
     filteredMeals () {
       // if any filter is empty that filter is not applied
@@ -130,7 +129,7 @@ export default {
         (this.selectedCategories.length? this.selectedCategories.includes(x.strCategory) : true) &&
         (this.selectedAreas.length? this.selectedAreas.includes(x.strArea) : true)
       )
-    }
+    },
   },
 
   methods: {
@@ -183,7 +182,7 @@ export default {
     },
     expandRecipe(meal) {
       this.$emit('expand-recipe', meal, "expanded")
-    }
+    },
   }
 }
 </script>

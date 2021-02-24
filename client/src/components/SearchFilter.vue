@@ -69,6 +69,20 @@
           ></b-form-checkbox-group>
         </div>
       </b-form-group>
+            <b-form-group
+        label="Sort your search by... "
+        v-slot="{ ariaDescribedby }"
+      >
+        <div v-if="state==='searched'">
+          <b-form-checkbox-group
+            align="left"
+            v-model="selectedSortOptions"
+            :options="sortOptions"
+            :aria-describedby="ariaDescribedby"
+            stacked
+          ></b-form-checkbox-group>
+        </div>
+      </b-form-group>
     </b-sidebar>
   </div>
 </template>
@@ -106,8 +120,16 @@ export default {
     return {
       selectedCategories: [],
       selectedAreas: [],
-      unselectedAreas: []
-    }
+      unselectedAreas: [],
+      selectedSortOptions: [],
+      sortOptions: 
+        [{
+          text: 'Missing Ingredients - ascending', value: 'ascending', disabled: false
+        },
+        {
+          text: "Missing Ingredients - descending", value: 'descending', disabled: false
+        }
+      ]}
   },
   computed: {
     disabledCategories () {
@@ -123,6 +145,16 @@ export default {
     },
     selectedAreas () {
       this.$emit('select-area', this.selectedAreas)
+    },
+    selectedSortOptions() {
+      if(this.selectedSortOptions.includes('ascending')) {
+        this.selectedSortOptions.filter(x => x==='ascending')
+        this.$emit('miss-ingr-sort', true)
+      }
+      if(this.selectedSortOptions.includes('descending')) {
+        this.selectedSortOptions.filter(x => x==='descending')
+        this.$emit('miss-ingr-sort', false)
+      }
     }
   },
 }

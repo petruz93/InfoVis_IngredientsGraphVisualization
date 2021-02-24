@@ -14,7 +14,8 @@
       :state=state
       @click=updateMealData 
       @select-category=selectCategory
-      @select-area=selectArea>
+      @select-area=selectArea
+      @miss-ingr-sort=sortMealsByMissIngr>
     </SearchFilter>
     <RecipeVisualizer
       v-if="privateState==='expanded'" 
@@ -205,6 +206,21 @@ export default {
       } catch (error) {
         console.log('Error while fetching category list\n', error)
       }
+    },
+    compareMealsByMissIngrs(mealA, mealB) {
+      if (mealA.missing < mealB.missing) {
+        return -1
+      } 
+      if (mealA.missing > mealB.missing) {
+        return 1
+      }
+      return 0
+    },
+    sortMealsByMissIngr(ascending) {
+      if(ascending)
+        this.meals.sort(this.compareMealsByMissIngrs)
+      else
+        this.meals.sort(-this.compareMealsByMissIngrs)
     },
     updateState(state) {
       this.privateState = state
