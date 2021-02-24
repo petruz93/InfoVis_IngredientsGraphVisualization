@@ -17,12 +17,12 @@
       @select-area=selectArea>
     </SearchFilter>
     <RecipeVisualizer
-      v-if="state==='expanded'" 
+      v-if="privateState==='expanded'" 
       :meal=selectedMeal
       :state=state>
     </RecipeVisualizer>
     <SearchResult
-      v-if="state==='searched'"
+      v-if="privateState==='searched'"
       :searching=searchFlag
       :meals=meals 
       :selectedCategories=selectedMealCategories 
@@ -77,6 +77,7 @@ export default {
       allMealAreas: [],
       selectedMealAreas: [],
       selectedIngredients: [],
+      privateState: 'idle'
       // ingredient: ''
     }
   },
@@ -96,9 +97,17 @@ export default {
     },
   },
   watch: {
-    onIdle() {
-      if(this.state==='idle') {
-        this.reset()
+    state: {
+      deep: true,
+      handler: function(newState) { this.updateState(newState)}
+    },
+    privateState() {
+      if(this.privateState==="idle") {
+        this.meals = []
+        this.selectedIngredients.splice(0)
+      // } else if(this.privateState==="searched") {
+      // } else if(this.privateState==="expanded") {
+      // }
       }
     }
   },
@@ -106,6 +115,7 @@ export default {
     reset() {
       this.meals = []
       this.selectedIngredients = []
+      this.updateState('idle')
     },
     async fetchAllIngredients() {
       try {
@@ -131,6 +141,23 @@ export default {
           console.log("secondo ingrediente :: ", newMeals);
           result = result.filter(x => newMeals.includes(x)) // intersection
           console.log("intersezione ::", result);
+        //   let ingr = selIngrs
+        //   let ingredients = new Set(ingr)
+        //   console.log(ingredients)
+        //   this.selectedIngredients = Array.from(ingredients)
+        //   let ingredientsIt = ingredients.values()
+        //   let i = ingredientsIt.next().value
+        //   console.log("i: ", i)
+        //   console.log("ingredients: ", ingredients)
+        //   let result = await getMealsByIngredient(i)
+        //   ingredients.forEach(
+        //     async function(x) {
+        //       let newMeals = await getMealsByIngredient(x)
+        //       newMeals = new Set(newMeals)
+        //       console.log("new meals: ", newMeals)
+        //       result = result.filter(y => newMeals.has(y))
+        //       console.log('result:', result)
+        //   })
         }
         if (result && result.length) {
           // for each meal it makes async and parallel requests for its datails
@@ -142,7 +169,7 @@ export default {
         }
         setTimeout(() => {
           this.searchFlag = false
-          this.state = state
+          this.updateState(state)
         })
       } catch (error) {
         console.log('Error on searchMeals function:', error)
@@ -157,7 +184,7 @@ export default {
     },
     selectMeal(selectedMeal, state) {
       this.selectedMeal = selectedMeal
-      this.state = state
+      this.privateState = state
     },
     selectIngr(selectedIngr, state) {
       this.selectedIngredients = []
@@ -165,7 +192,7 @@ export default {
       this.searchMeals(this.selectedIngredients, state)
     },
     resetFilters () {
-      this.state = "idle"
+      this.reset()
     },
     async updateMealData() {
       try {
@@ -179,6 +206,10 @@ export default {
         console.log('Error while fetching category list\n', error)
       }
     },
+    updateState(state) {
+      this.privateState = state
+      this.$emit('search-state-change', state)
+    }
   },
 }
 </script>

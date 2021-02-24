@@ -4,7 +4,7 @@
     <b-row cols="1" cols-sm="2" cols-md="12"  class="mb-2">
       <b-col cols="12" sm="8" md="9" align-self="center">
         <v-select multiple
-          v-model="selectedIngredientsData"
+          v-model="selectedIngredients"
           label="strIngredient"
           :reduce="i => i.strIngredient"
           :options="allIngredients"
@@ -31,7 +31,7 @@
       </b-col>
       <b-col cols="12" sm="4" md="3" align-self="center">
         <!-- <b-button variant="primary" @click="searchMeals(selectedIngredients)"> -->
-        <b-button variant="primary" @click="onClickSearch(selectedIngredientsData)">
+        <b-button variant="primary" @click="onClickSearch(selectedIngredients)">
           <b-icon icon="search" class="mr-2"></b-icon>
           <span>Find Recipes</span>
         </b-button>
@@ -42,7 +42,7 @@
     </b-row>
     <b-row>
     </b-row>
-    <SelectedIngredients v-if=selectedIngredientsData.length :selectedList=selectedIngredientsData></SelectedIngredients>
+    <SelectedIngredients v-if=selectedIngredients.length :selectedList=selectedIngredients></SelectedIngredients>
   </b-container>
   <!-- <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult> -->
   <!-- <SearchFilter :meals=meals></SearchFilter> -->
@@ -81,7 +81,7 @@ export default {
     return {
       meals: [],
       searchFlag: false,
-      selectedIngredientsData: this.selectedIngredients
+      // selectedIngredientsData: this.selectedIngredients
     }
   },
 
@@ -93,7 +93,7 @@ export default {
         this.$emit('search-meals', selIngrs, "searched")
     },
     onClickClear() {
-      this.selectedIngredientsData = []
+      // this.selectedIngredientsData = []
       this.$emit('reset-filters')
     }
     // async searchMeals(selectedd) {

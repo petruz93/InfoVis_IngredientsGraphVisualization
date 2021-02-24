@@ -1,9 +1,12 @@
 <template>
   <div id="app">
     <a role="button" aria-pressed="true">
-      <img alt="App logo" src="@/assets/recipes-icon.png" @click="onClickReset('idle')">
+      <img alt="App logo" src="@/assets/recipes-icon.png" @click="changeSearchState('idle')">
     </a>
-    <Dashboard :state=state></Dashboard>
+    <Dashboard 
+      :state=searchState
+      @search-state-change=changeSearchState>
+    </Dashboard>
   </div>
 </template>
 
@@ -17,13 +20,13 @@ export default {
   },
   data() {
     return {
-      state: "idle"
+      state: "startup",
+      searchState: "idle"
     }
   },
   methods: {
-    onClickReset(state) {
-      this.state = ''
-      this.state = state
+    changeSearchState(state) {
+      this.searchState = state
     }
   }
 }
