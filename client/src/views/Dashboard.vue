@@ -44,6 +44,7 @@
 
 <script>
 import { getMealsByIngredient, getMealDetailsById, getAllIngredients, getAllCategories, getAllAreas } from '@/themealdbConnector.js'
+import isEqual from 'lodash.isequal'
 
 export default {
   name: 'Dashboard',
@@ -132,32 +133,13 @@ export default {
         const ingredients = new Array(...selIngrs)
         let i = ingredients.shift()
         let result = await getMealsByIngredient(i)
-        console.log("i1 :: ", i);
-        console.log("primo ingrediente :: ", result);
         while (ingredients.length) {
           i = ingredients.shift()
           let newMeals = await getMealsByIngredient(i)
-          console.log("i1 :: ", i);
-          console.log("secondo ingrediente :: ", newMeals);
-          result = result.filter(x => newMeals.includes(x)) // intersection
-          console.log("intersezione ::", result);
-        //   let ingr = selIngrs
-        //   let ingredients = new Set(ingr)
-        //   console.log(ingredients)
-        //   this.selectedIngredients = Array.from(ingredients)
-        //   let ingredientsIt = ingredients.values()
-        //   let i = ingredientsIt.next().value
-        //   console.log("i: ", i)
-        //   console.log("ingredients: ", ingredients)
-        //   let result = await getMealsByIngredient(i)
-        //   ingredients.forEach(
-        //     async function(x) {
-        //       let newMeals = await getMealsByIngredient(x)
-        //       newMeals = new Set(newMeals)
-        //       console.log("new meals: ", newMeals)
-        //       result = result.filter(y => newMeals.has(y))
-        //       console.log('result:', result)
-        //   })
+          result = result.filter(x => {
+            const found = newMeals.find(el => el.idMeal == x.idMeal)
+            return isEqual(x, found)
+          }) // intersection
         }
         if (result && result.length) {
           // for each meal it makes async and parallel requests for its datails
