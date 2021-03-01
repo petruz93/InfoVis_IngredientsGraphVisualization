@@ -29,7 +29,7 @@
           
         <b-card-text align="left" class="ml-2 mr-2 mb-2">
           <div>
-            {{ meal.strInstructions }}
+            {{ instructions }}
           </div>
         </b-card-text>
         <div>
@@ -77,13 +77,19 @@ export default {
           break
         } 
         result[i] = { 
-          'measure': (this.meal[currMeasure]===undefined || this.meal[currMeasure].trim()==="") ? "n/a" : this.meal[currMeasure],
+          'measure': (
+            this.meal[currMeasure]===undefined ||
+            this.meal[currMeasure]===null || 
+            this.meal[currMeasure].trim()==="") ? "n/a" : this.meal[currMeasure],
           'name': name,
           'url': getSmallIngrImageURL(this.meal[currIngr]),
         }
         i++
       }
       return result
+    },
+    instructions () {
+      return this.meal.strInstructions.replaceAll('. ', '.\n')
     }
   }
 }

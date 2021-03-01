@@ -45,7 +45,7 @@
 
 <script>
 import { getMealsByIngredient, getMealDetailsById, getAllIngredients, getAllCategories, getAllAreas } from '@/themealdbConnector.js'
-import isEqual from 'lodash.isequal'
+// import isEqual from 'lodash.isequal'
 
 export default {
   name: 'Dashboard',
@@ -76,8 +76,10 @@ export default {
       selectedMeal: {},
       allMealCategories: [],
       selectedMealCategories: [],
+      searchMealCategories: [],
       allMealAreas: [],
       selectedMealAreas: [],
+      searchMealAreas: [],
       selectedIngredients: [],
       privateState: 'idle'
       // ingredient: ''
@@ -89,14 +91,14 @@ export default {
     this.updateMealData()
   },
   computed: {
-    searchMealCategories () {
-      const categorySet = new Set(this.meals.map(x => x.strCategory))
-      return Array.from(categorySet).sort((a,b) => a.localeCompare(b))
-    },
-    searchMealAreas () {
-      const areaSet = new Set(this.meals.map(x => x.strArea))
-      return Array.from(areaSet).sort((a,b) => a.localeCompare(b))
-    },
+    // searchMealCategories () {
+    //   const categorySet = new Set(this.meals.map(x => x.strCategory))
+    //   return Array.from(categorySet).sort((a,b) => a.localeCompare(b))
+    // },
+    // searchMealAreas () {
+    //   const areaSet = new Set(this.meals.map(x => x.strArea))
+    //   return Array.from(areaSet).sort((a,b) => a.localeCompare(b))
+    // },
   },
   watch: {
     state: {
@@ -111,12 +113,18 @@ export default {
       // } else if(this.privateState==="expanded") {
       // }
       }
+    },
+    meals () {
+      const categorySet = new Set(this.meals.map(x => x.strCategory))
+      this.searchMealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
+      const areaSet = new Set(this.meals.map(x => x.strArea))
+      this.searchMealAreas = Array.from(areaSet).sort((a,b) => a.localeCompare(b))
     }
   },
   methods: {
     reset() {
-      this.meals = []
-      this.selectedIngredients = []
+      // this.meals = []
+      // this.selectedIngredients = []
       this.updateState('idle')
     },
     async fetchAllIngredients() {
@@ -139,7 +147,7 @@ export default {
           let newMeals = await getMealsByIngredient(i)
           result = result.filter(x => {
             const found = newMeals.find(el => el.idMeal == x.idMeal)
-            return isEqual(x, found)
+            return found != undefined
           }) // intersection
         }
         if (result && result.length) {
@@ -175,7 +183,10 @@ export default {
       this.searchMeals(this.selectedIngredients, state)
     },
     resetFilters () {
-      this.reset()
+      // this.meals = []
+      this.searchMealCategories = this.allMealCategories
+      this.searchMealAreas = this.allMealAreas
+      this.selectedIngredients.splice(0)
     },
     async updateMealData() {
       try {
@@ -189,20 +200,11 @@ export default {
         console.log('Error while fetching category list\n', error)
       }
     },
-    compareMealsByMissIngrs(mealA, mealB) {
-      if (mealA.missing < mealB.missing) {
-        return -1
-      } 
-      if (mealA.missing > mealB.missing) {
-        return 1
-      }
-      return 0
-    },
     sortMealsByMissIngr(ascending) {
       if(ascending)
-        this.meals.sort(this.compareMealsByMissIngrs)
+        this.meals.sort((a,b) => a.missing - b.missing)
       else
-        this.meals.sort(-this.compareMealsByMissIngrs)
+        this.meals.sort((a,b) => b.missing - a.missing)
     },
     updateState(state) {
       this.privateState = state

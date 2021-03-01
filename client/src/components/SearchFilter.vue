@@ -69,18 +69,19 @@
           ></b-form-checkbox-group>
         </div>
       </b-form-group>
-            <b-form-group
+      <b-form-group
+        v-if="state==='searched'"
         label="Sort your search by... "
         v-slot="{ ariaDescribedby }"
       >
         <div v-if="state==='searched'">
-          <b-form-checkbox-group
+          <b-form-radio-group
             align="left"
-            v-model="selectedSortOptions"
+            v-model="selectedSortOption"
             :options="sortOptions"
             :aria-describedby="ariaDescribedby"
             stacked
-          ></b-form-checkbox-group>
+          ></b-form-radio-group>
         </div>
       </b-form-group>
     </b-sidebar>
@@ -121,13 +122,13 @@ export default {
       selectedCategories: [],
       selectedAreas: [],
       unselectedAreas: [],
-      selectedSortOptions: [],
+      selectedSortOption: {},
       sortOptions: 
         [{
-          text: 'Missing Ingredients - ascending', value: 'ascending', disabled: false
+          text: 'Missing Ingredients - ascending', value: 'ascending'
         },
         {
-          text: "Missing Ingredients - descending", value: 'descending', disabled: false
+          text: 'Missing Ingredients - descending', value: 'descending'
         }
       ]}
   },
@@ -146,15 +147,15 @@ export default {
     selectedAreas () {
       this.$emit('select-area', this.selectedAreas)
     },
-    selectedSortOptions() {
-      if(this.selectedSortOptions.includes('ascending')) {
-        this.selectedSortOptions.filter(x => x==='ascending')
+    selectedSortOption() {
+      if(this.selectedSortOption.includes('ascending')) {
         this.$emit('miss-ingr-sort', true)
       }
-      if(this.selectedSortOptions.includes('descending')) {
-        this.selectedSortOptions.filter(x => x==='descending')
+      else if(this.selectedSortOption.includes('descending')) {
         this.$emit('miss-ingr-sort', false)
       }
+      else
+        this.$emit('miss-ingr-sort', false)
     }
   },
 }
