@@ -1,8 +1,7 @@
 <template>
-<div>
-  <b-container>
-    <b-row cols="1" cols-sm="2" cols-md="12"  class="mb-2">
-      <b-col cols="12" sm="8" md="9" align-self="center">
+  <b-container fluid>
+    <b-row cols="1" cols-sm="2" cols-md="12" class="mb-2">
+      <b-col cols="12" sm="12" md="8" align-self="center" class="mt-1">
         <v-select multiple
           v-model="selectedIngredients"
           label="strIngredient"
@@ -20,16 +19,11 @@
                         blank-color="#FEFFA3"
                         width="55%"
                         class="mr-2 border border-dark bg-light"></b-img-lazy>
-            <!-- <b-avatar :src="imageURL(strIngredient)"
-                      icon="question"
-                      variant="light"
-                      size="lg"
-                      class="mr-2 border border-dark"></b-avatar> -->
             <span class="mr-auto text-theme">{{ strIngredient }}</span>
           </template>
         </v-select>
       </b-col>
-      <b-col cols="12" sm="4" md="3" align-self="center">
+      <b-col cols="12" sm="12" md="4" align-self="center" class="mt-1">
         <!-- <b-button variant="primary" @click="searchMeals(selectedIngredients)"> -->
         <b-button variant="primary" @click="onClickSearch(selectedIngredients)">
           <b-icon icon="search" class="mr-2"></b-icon>
@@ -44,15 +38,11 @@
     </b-row>
     <SelectedIngredients v-if=selectedIngredients.length :selectedList=selectedIngredients></SelectedIngredients>
   </b-container>
-  <!-- <SearchResult v-if="searched" :searching=searchFlag :meals=meals></SearchResult> -->
-  <!-- <SearchFilter :meals=meals></SearchFilter> -->
-</div>
 </template>
 
 
 <script>
 import vSelect from 'vue-select'
-// import 'vue-select/dist/vue-select.css'
 import { getSmallIngrImageURL } from '@/themealdbConnector.js'
 
 export default {
@@ -61,8 +51,6 @@ export default {
   components: {
     vSelect,
     SelectedIngredients: () => import('@/components/SelectedIngredients'),
-    // SearchResult: () => import('@/components/SearchResult.vue'),
-    // SearchFilter: () => import('@/components/SearchFilter')
   },
 
   props: {
@@ -90,46 +78,17 @@ export default {
       return getSmallIngrImageURL(ingr)
     },
     onClickSearch(selIngrs) {
-        this.$emit('search-meals', selIngrs, "searched")
+        this.$emit('search-meals', selIngrs, 'searched')
     },
     onClickClear() {
       // this.selectedIngredientsData = []
-      this.$emit('reset-filters')
+      this.$emit('clear')
     }
-    // async searchMeals(selectedd) {
-    //   this.searchFlag = true
-    //   try {
-    //     const ingrList = new Array(...selectedd)
-    //     let i = ingrList.shift()
-    //     let result = await getMealsByIngredient(i)
-    //     while (ingrList.length) {
-    //       i = ingrList.shift()
-    //       let newMeals = await getMealsByIngredient(i)
-    //       result = result.filter(x => newMeals.includes(x)) // intersection
-    //     }
-    //     if (result && result.length) {
-    //       // for each meal it makes async and parallel requests for datails
-    //       result = await Promise.all(result.map(x => getMealDetailsById(x.idMeal)))
-    //       this.meals = result
-    //       this.selectedIngredients = []
-    //     } else {
-    //       this.meals = []
-    //     }
-    //     setTimeout(() => {
-    //       this.searchFlag = false
-    //       this.searched = true
-    //     })
-    //   } catch (error) {
-    //     console.log('Error on searchMeals function:', error)
-    //   }
-    // }
-    // addToSelectedList(ingr) {
-    //   this.$emit('add-ingredient', ingr)
-    // }
   },
 
 }
 </script>
+
 
 <style>
 /* :root {

@@ -2,10 +2,12 @@
   <b-container fluid="lg">
     <b-card-group deck class="d-block">
       <b-card no-body class="my-3">
-        <b-card-title style="color: var(--green-theme)">{{ meal.strMeal }}</b-card-title>
-        <b-card-sub-title class="mb-2"><em>&mdash; {{ meal.strCategory }}</em></b-card-sub-title>
+        <b-card-title title-tag="h2" style="color: var(--green-theme)">{{ meal.strMeal }}</b-card-title>
+        <b-card-sub-title sub-title-tag="h5" class="mb-2"><em>&mdash; {{ meal.strCategory }}</em></b-card-sub-title>
         <b-card-img :src="meal.strMealThumb" left width="100%" class="crop"></b-card-img>
-        <div>To make this recipe you will need:</div>
+        <div align="left" class="mt-3 ml-3">
+          <h4>You will need:</h4>
+        </div>
           <b-list-group align="left">
             <b-list-item v-for="ingr in ingredientURLs" :key=ingr>
               <b-row no-gutters class="border-bottom border-primary">
@@ -14,35 +16,33 @@
                   rounded="circle"
                   blank-color="#FEFFA3"
                   width="50%"
-                  class="ml-2 mr-2 border border-dark"
+                  class="ml-4 mr-2 border border-dark"
                 ></b-img>
                 {{ingr.name}}
               </b-col>
               <b-col cols="12" sm="6" md="7">
-                <b-card-body class="text-left">
-                  <div class = "ml-2">{{ingr.measure}}</div>
+                <b-card-body>
+                  <div class="ml-2 text-left">{{ingr.measure}}</div>
                 </b-card-body>
               </b-col>
             </b-row>  
             </b-list-item>
           </b-list-group>
           
-        <b-card-text align="left" class="ml-2 mr-2 mb-2">
+        <b-card-text align="left" class="m-3">
           <div>
-            {{ instructions }}
+            <h4>Instructions:</h4>
+            <!-- {{ instructions }} -->
+            {{ meal.strInstructions }}
+          </div>
+          <div>
+            <br><br>
+            <h5>Check out the video recipe!</h5>
+            <a :href=meal.strYoutube target="_blank">
+              <img alt="Youtube logo" src="@/assets/youtube_icon.png">
+            </a>
           </div>
         </b-card-text>
-        <div>
-          <br>
-          <b-card-text align="left" class="ml-2 mr-2 mb-2">
-            Check the video recipe!
-          </b-card-text>
-        </div>
-        <div align="left" class = "ml-2 mb-2">
-          <a :href=this.meal.strYoutube target="_blank">
-          <img alt="App logo" src="@/assets/youtube_icon.png">
-          </a>
-        </div>  
       </b-card>
     </b-card-group>
   </b-container>
@@ -88,9 +88,9 @@ export default {
       }
       return result
     },
-    instructions () {
-      return this.meal.strInstructions.replaceAll('. ', '.\n')
-    }
+    // instructions () {
+    //   return this.meal.strInstructions.replaceAll('. ', '.\n')
+    // }
   }
 }
 </script>

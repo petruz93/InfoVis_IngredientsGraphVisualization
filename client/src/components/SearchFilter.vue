@@ -1,10 +1,13 @@
 <template>
   <div>
-    <b-button variant="primary" v-b-toggle.sidebar-1>Search Filters</b-button>
-    <b-sidebar id="sidebar-1" title="Filter your search!" shadow>
+    <b-button variant="link" v-b-toggle.sidebar-1 class="text-decoration-none text-primary">
+      <b-icon icon="filter-square"></b-icon>
+    </b-button>
+    <b-sidebar id="sidebar-1" title="Filter your search!" shadow backdrop align="left">
       <b-form-group
-        label="Select the categories you are interested in!"
+        label="By Category"
         v-slot="{ ariaDescribedby }"
+        class="ml-3"
       >
         <div v-if="state==='searched'">
           <b-form-checkbox-group
@@ -36,9 +39,12 @@
         </div>
       </b-form-group>
       
+      <hr width="90%">
+
       <b-form-group
-        label="Select the areas from which you want your recipes!"
+        label="By Geographical Area"
         v-slot="{ ariaDescribedby }"
+        class="ml-3"
       >
         <div v-if="state==='searched'">
           <b-form-checkbox-group
@@ -69,12 +75,14 @@
           ></b-form-checkbox-group>
         </div>
       </b-form-group>
-      <b-form-group
-        v-if="state==='searched'"
-        label="Sort your search by... "
-        v-slot="{ ariaDescribedby }"
-      >
-        <div v-if="state==='searched'">
+
+      <div v-if="state==='searched'">
+        <hr width="90%">
+        <b-form-group
+          label="Sort your search by... "
+          v-slot="{ ariaDescribedby }"
+          class="ml-3"
+        >
           <b-form-radio-group
             align="left"
             v-model="selectedSortOption"
@@ -82,8 +90,8 @@
             :aria-describedby="ariaDescribedby"
             stacked
           ></b-form-radio-group>
-        </div>
-      </b-form-group>
+        </b-form-group>
+      </div>
     </b-sidebar>
   </div>
 </template>
@@ -108,20 +116,17 @@ export default {
     },
     searchMealCategories: {
       required: true,
-      type: Array,
-      default: () => []
+      type: Array
     },
     searchMealAreas: {
       required: true,
-      type: Array,
-      default: () => []
+      type: Array
     },
   },
   data () {
     return {
       selectedCategories: [],
       selectedAreas: [],
-      unselectedAreas: [],
       selectedSortOption: {},
       sortOptions: 
         [{
@@ -141,6 +146,26 @@ export default {
     }
   },
   watch: {
+    searchMealCategories () {
+      if (this.state==='cleanSearch' || this.state==='idle') {
+        this.selectedCategories = []
+      }
+      if (this.selectedCategories.length==0 && 
+          this.searchMealCategories!=this.allMealCategories ||
+          this.searchMealCategories.length==0) {
+        this.selectedCategories = this.searchMealCategories
+      }
+    },
+    searchMealAreas () {
+      if (this.state==='cleanSearch') {
+        this.selectedAreas = []
+      }
+      if (this.selectedAreas.length==0 && 
+          this.searchMealAreas!=this.allMealAreas ||
+          this.searchMealAreas.length==0) {
+        this.selectedAreas = this.searchMealAreas
+      }
+    },
     selectedCategories () {
       this.$emit('select-category', this.selectedCategories)
     },

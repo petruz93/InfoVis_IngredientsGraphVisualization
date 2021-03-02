@@ -1,12 +1,8 @@
 <template>
   <b-container fluid="lg">
-    <SearchBar 
-      :allIngredients=allIngredients
-      :selectedIngredients=selectedIngredients 
-      @search-meals=searchMeals
-      @reset-filters=resetFilters>
-    </SearchBar>
     <SearchFilter
+      class="ml-3"
+      align="left"
       :allMealCategories=allMealCategories 
       :allMealAreas=allMealAreas 
       :searchMealCategories=searchMealCategories
@@ -17,13 +13,18 @@
       @select-area=selectArea
       @miss-ingr-sort=sortMealsByMissIngr>
     </SearchFilter>
+    <SearchBar 
+      :allIngredients=allIngredients
+      :selectedIngredients=selectedIngredients 
+      @search-meals=searchMeals
+      @clear=clear>
+    </SearchBar>
     <RecipeVisualizer
-      v-if="privateState==='expanded'" 
-      :meal=selectedMeal
-      :state=state>
+      v-if="privateState==='expanded' || privateState==='cleanExpanded'"
+      :meal=selectedMeal>
     </RecipeVisualizer>
     <SearchResult
-      v-if="privateState==='searched'"
+      v-if="privateState==='searched' || privateState==='cleanSearch'"
       :searching=searchFlag
       :meals=meals 
       :selectedCategories=selectedMealCategories 
@@ -35,7 +36,7 @@
     <hr>
     <!-- visualizzazione degli ingredienti in ordine alfabetico -->
     <IngredientVisualizer
-      v-if="state==='idle'"
+      v-if="privateState==='idle'"
       :ingredients=allIngredients
       @ingr-search=selectIngr>
     </IngredientVisualizer>
@@ -48,7 +49,7 @@ import { getMealsByIngredient, getMealDetailsById, getAllIngredients, getAllCate
 // import isEqual from 'lodash.isequal'
 
 export default {
-  name: 'Dashboard',
+  name: 'SearchView',
   
   components: {
     SearchBar: () => import('@/components/SearchBar'),
@@ -71,7 +72,7 @@ export default {
       // mealData: [],
       allIngredients: [],
       searchFlag: false,
-      searched: false,
+      // searched: false,
       meals: [],
       selectedMeal: {},
       allMealCategories: [],
@@ -103,20 +104,32 @@ export default {
   watch: {
     state: {
       deep: true,
-      handler: function(newState) { this.updateState(newState)}
+      handler: function(newState) { 
+        // if(this.state==='idle') {
+        //   this.meals = []
+        //   this.selectedIngredients.splice(0)
+          this.updateSearchState(newState)
+          // }
+      }
     },
     privateState() {
       if(this.privateState==="idle") {
         this.meals = []
         this.selectedIngredients.splice(0)
-      // } else if(this.privateState==="searched") {
-      // } else if(this.privateState==="expanded") {
-      // }
+    // } else if(this.privateState==="searched") {
+    // } else if(this.privateState==="expanded") {
+    // }
       }
     },
     meals () {
       const categorySet = new Set(this.meals.map(x => x.strCategory))
       this.searchMealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
+        // .map(cat => {
+        //   const obj = {}
+        //   obj.text = cat
+        //   obj.value = cat
+        //   return obj
+        // })
       const areaSet = new Set(this.meals.map(x => x.strArea))
       this.searchMealAreas = Array.from(areaSet).sort((a,b) => a.localeCompare(b))
     }
@@ -125,7 +138,7 @@ export default {
     reset() {
       // this.meals = []
       // this.selectedIngredients = []
-      this.updateState('idle')
+      this.updateSearchState('idle')
     },
     async fetchAllIngredients() {
       try {
@@ -160,7 +173,7 @@ export default {
         }
         setTimeout(() => {
           this.searchFlag = false
-          this.updateState(state)
+          this.updateSearchState(state)
         })
       } catch (error) {
         console.log('Error on searchMeals function:', error)
@@ -182,11 +195,19 @@ export default {
       this.selectedIngredients.push(selectedIngr)
       this.searchMeals(this.selectedIngredients, state)
     },
-    resetFilters () {
+    clear () {
+      console.log('lalala');
       // this.meals = []
       this.searchMealCategories = this.allMealCategories
       this.searchMealAreas = this.allMealAreas
       this.selectedIngredients.splice(0)
+      if (this.privateState === 'searched') {
+        // this.privateState = 'cleanSearch'
+        this.updateSearchState('cleanSearch')
+      } else if (this.privateState === 'expanded') {
+        this.updateSearchState('cleanExpanded')
+      }
+      // this.updateSearchState(state)
     },
     async updateMealData() {
       try {
@@ -206,7 +227,7 @@ export default {
       else
         this.meals.sort((a,b) => b.missing - a.missing)
     },
-    updateState(state) {
+    updateSearchState(state) {
       this.privateState = state
       this.$emit('search-state-change', state)
     }
@@ -214,33 +235,9 @@ export default {
 }
 </script>
 
-
 <style scoped>
   .ingr-img {
     height: 100px;
     width: 100px;
   }
-</style>
-<style>
-  /* ul {
-    list-style-type: none;
-    margin: 20;
-    padding: 0;
-    overflow: hidden;
-    display: inline-block;
-  }
-
-  li {
-    float: left;
-    color: black;
-    text-align: center;
-    padding: 16px;
-    width: 20%;
-    min-width: 100px;
-    text-decoration: none;
-  }
-
-  li:hover {
-    background-color: #f5f1f1;
-  } */
 </style>

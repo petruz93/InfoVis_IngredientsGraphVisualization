@@ -3,20 +3,20 @@
     <a role="button" aria-pressed="true">
       <img alt="App logo" src="@/assets/recipes-icon.png" @click="changeSearchState('idle')">
     </a>
-    <Dashboard 
+    <SearchView 
       :state=searchState
       @search-state-change=changeSearchState>
-    </Dashboard>
+    </SearchView>
   </div>
 </template>
 
 <script>
-import Dashboard from './views/Dashboard.vue'
+import SearchView from '@/views/SearchView.vue'
 
 export default {
   name: 'App',
   components: {
-    Dashboard
+    SearchView
   },
   data() {
     return {
