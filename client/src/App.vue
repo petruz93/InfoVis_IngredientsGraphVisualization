@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <a role="button" aria-pressed="true">
+    <!-- <a role="button" aria-pressed="true" href="">
+      <img alt="App logo" src="@/assets/recipes-icon.png"> -->
       <img alt="App logo" src="@/assets/recipes-icon.png" @click="changeSearchState('idle')">
     </a>
     <SearchView 

@@ -2,32 +2,32 @@
   <b-container fluid="lg">
     <b-card-group deck class="d-block">
       <b-card no-body class="my-3">
-        <b-card-title title-tag="h2" style="color: var(--green-theme)">{{ meal.strMeal }}</b-card-title>
-        <b-card-sub-title sub-title-tag="h5" class="mb-2"><em>&mdash; {{ meal.strCategory }}</em></b-card-sub-title>
+        <div class="my-3">
+          <b-card-title title-tag="h2" style="color: var(--green-theme)">{{ meal.strMeal }}</b-card-title>
+          <b-card-sub-title sub-title-tag="h5"><em>&mdash; {{ meal.strCategory }}</em></b-card-sub-title>
+        </div>
         <b-card-img :src="meal.strMealThumb" left width="100%" class="crop"></b-card-img>
         <div align="left" class="mt-3 ml-3">
           <h4>You will need:</h4>
         </div>
-          <b-list-group align="left">
-            <b-list-item v-for="ingr in ingredientURLs" :key=ingr>
-              <b-row no-gutters class="border-bottom border-primary">
-              <b-col cols="12" sm="6" md="5" align-self="center" class="border-right border-primary">
+        <b-list-group align="left" class="border-0">
+          <b-list-group-item v-for="(ingr, index) in ingredientURLs" :key="index" class="border-left-0 border-right-0 p-2">
+            <b-row class="m-0">
+              <b-col cols="12" sm="6" align-self="center">
                 <b-img :src="ingr.url"
                   rounded="circle"
                   blank-color="#FEFFA3"
                   width="50%"
-                  class="ml-4 mr-2 border border-dark"
+                  class="mx-2 border border-dark"
                 ></b-img>
                 {{ingr.name}}
               </b-col>
-              <b-col cols="12" sm="6" md="7">
-                <b-card-body>
-                  <div class="ml-2 text-left">{{ingr.measure}}</div>
-                </b-card-body>
+              <b-col cols="12" sm="6" align-self="center">
+                  <div class="text-left mx-3">{{ingr.measure}}</div>
               </b-col>
             </b-row>  
-            </b-list-item>
-          </b-list-group>
+          </b-list-group-item>
+        </b-list-group>
           
         <b-card-text align="left" class="m-3">
           <div>
@@ -35,7 +35,7 @@
             <!-- {{ instructions }} -->
             {{ meal.strInstructions }}
           </div>
-          <div>
+          <div class="mb-2">
             <br><br>
             <h5>Check out the video recipe!</h5>
             <a :href=meal.strYoutube target="_blank">

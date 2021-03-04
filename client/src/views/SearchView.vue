@@ -105,22 +105,26 @@ export default {
     state: {
       deep: true,
       handler: function(newState) { 
-        // if(this.state==='idle') {
-        //   this.meals = []
-        //   this.selectedIngredients.splice(0)
-          this.updateSearchState(newState)
-          // }
+        if(this.state==='idle') {
+          this.meals = []
+          this.searchMealCategories = []
+          this.searchMealAreas = []
+          this.selectedIngredients.splice(0)
+        }
+        this.updateState(newState)
       }
     },
-    privateState() {
-      if(this.privateState==="idle") {
-        this.meals = []
-        this.selectedIngredients.splice(0)
-    // } else if(this.privateState==="searched") {
-    // } else if(this.privateState==="expanded") {
-    // }
-      }
-    },
+    // privateState() {
+    //   if(this.privateState==="idle") {
+    //     this.meals = []
+    //       this.searchMealCategories = []
+    //       this.searchMealAreas = []
+    //     this.selectedIngredients.splice(0)
+    // // } else if(this.privateState==="searched") {
+    // // } else if(this.privateState==="expanded") {
+    // // }
+    //   }
+    // },
     meals () {
       const categorySet = new Set(this.meals.map(x => x.strCategory))
       this.searchMealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
@@ -135,11 +139,11 @@ export default {
     }
   },
   methods: {
-    reset() {
-      // this.meals = []
-      // this.selectedIngredients = []
-      this.updateSearchState('idle')
-    },
+    // reset() {
+    //   // this.meals = []
+    //   // this.selectedIngredients = []
+    //   this.updateState('idle')
+    // },
     async fetchAllIngredients() {
       try {
         this.allIngredients = await getAllIngredients()
@@ -171,9 +175,9 @@ export default {
         } else {
           this.meals = []
         }
+        this.updateState(state)
         setTimeout(() => {
           this.searchFlag = false
-          this.updateSearchState(state)
         })
       } catch (error) {
         console.log('Error on searchMeals function:', error)
@@ -188,7 +192,7 @@ export default {
     },
     selectMeal(selectedMeal, state) {
       this.selectedMeal = selectedMeal
-      this.privateState = state
+      this.updateState(state)
     },
     selectIngr(selectedIngr, state) {
       this.selectedIngredients = []
@@ -196,18 +200,16 @@ export default {
       this.searchMeals(this.selectedIngredients, state)
     },
     clear () {
-      console.log('lalala');
       // this.meals = []
-      this.searchMealCategories = this.allMealCategories
-      this.searchMealAreas = this.allMealAreas
+      this.searchMealCategories = []
+      this.searchMealAreas = []
       this.selectedIngredients.splice(0)
       if (this.privateState === 'searched') {
-        // this.privateState = 'cleanSearch'
-        this.updateSearchState('cleanSearch')
+        this.updateState('cleanSearch')
       } else if (this.privateState === 'expanded') {
-        this.updateSearchState('cleanExpanded')
+        this.updateState('cleanExpanded')
       }
-      // this.updateSearchState(state)
+      // this.updateState(state)
     },
     async updateMealData() {
       try {
@@ -227,7 +229,7 @@ export default {
       else
         this.meals.sort((a,b) => b.missing - a.missing)
     },
-    updateSearchState(state) {
+    updateState(state) {
       this.privateState = state
       this.$emit('search-state-change', state)
     }

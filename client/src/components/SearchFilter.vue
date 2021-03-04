@@ -9,7 +9,7 @@
         v-slot="{ ariaDescribedby }"
         class="ml-3"
       >
-        <div v-if="state==='searched'">
+        <div v-if="state==='searched' || state==='expanded'">
           <b-form-checkbox-group
             align="left"
             v-model="selectedCategories"
@@ -46,7 +46,7 @@
         v-slot="{ ariaDescribedby }"
         class="ml-3"
       >
-        <div v-if="state==='searched'">
+        <div v-if="state==='searched' || state==='expanded'">
           <b-form-checkbox-group
             align="left"
             v-model="selectedAreas"
@@ -147,24 +147,40 @@ export default {
   },
   watch: {
     searchMealCategories () {
-      if (this.state==='cleanSearch' || this.state==='idle') {
-        this.selectedCategories = []
-      }
-      if (this.selectedCategories.length==0 && 
-          this.searchMealCategories!=this.allMealCategories ||
-          this.searchMealCategories.length==0) {
-        this.selectedCategories = this.searchMealCategories
-      }
+      setTimeout(() => {
+        if (this.state==='searched' && this.selectedCategories.length==0) {
+          this.selectedCategories = this.searchMealCategories
+        }
+        if (this.state==='idle' || this.state==='cleanSearch' || this.state==='cleanExpanded') {
+          this.selectedCategories = []
+        }
+      })
+    // else if (this.state==='cleanSearch' || this.state==='idle') {
+    //     this.selectedCategories = []
+    //   }
+    //   // if (this.selectedCategories.length==0 && 
+    //   //     this.searchMealCategories!=this.allMealCategories
+    //   //      || this.searchMealCategories.length==0) {
+    //   //   this.selectedCategories = this.searchMealCategories
+    //   // }
     },
     searchMealAreas () {
-      if (this.state==='cleanSearch') {
-        this.selectedAreas = []
-      }
-      if (this.selectedAreas.length==0 && 
-          this.searchMealAreas!=this.allMealAreas ||
-          this.searchMealAreas.length==0) {
-        this.selectedAreas = this.searchMealAreas
-      }
+      setTimeout(() => {
+        if (this.state==='searched' && this.selectedAreas.length==0) {
+          this.selectedAreas = this.searchMealAreas
+        }
+        if (this.state==='idle' || this.state==='cleanSearch' || this.state==='cleanExpanded') {
+          this.selectedAreas = []
+        }
+      })
+      // if (this.state==='cleanSearch') {
+      //   this.selectedAreas = []
+      // }
+      // if (this.selectedAreas.length==0 && 
+      //     this.searchMealAreas!=this.allMealAreas ||
+      //     this.searchMealAreas.length==0) {
+      //   this.selectedAreas = this.searchMealAreas
+      // }
     },
     selectedCategories () {
       this.$emit('select-category', this.selectedCategories)
