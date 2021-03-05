@@ -33,11 +33,11 @@ Users can:
 
   
 
-- Category
+  - Category
 
   
 
-- Geographical Area
+  - Geographical Area
 
   
 
