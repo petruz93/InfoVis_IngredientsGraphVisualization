@@ -12,7 +12,7 @@
               no-body class="my-3"
             >
               <b-row no-gutters>
-                <b-col cols="12" sm="6" md="5">
+                <b-col cols="12" sm="6" md="5" align-self="center">
                   <a @click=expandRecipe(meal) role="button" aria-pressed="true">
                     <b-card-img :src="meal.strMealThumb" left width="100%" class="rounded-0"></b-card-img>
                   </a>
@@ -67,8 +67,7 @@ export default {
     },
     meals: {
       required: true,
-      type: Array,
-      default: () => []
+      type: Array
     },
     selectedCategories: {
       type: Array,
@@ -81,7 +80,7 @@ export default {
     selectedIngrs: {
       type: Array,
       default: () => []
-    },
+    }
   },
 
   data () {
@@ -89,7 +88,7 @@ export default {
       mealIngredients: {
         type: Array,
         default: () => []
-      },
+      }
     }
   },
 
@@ -99,7 +98,7 @@ export default {
       return this.meals.filter(x => 
         (this.selectedCategories.length? this.selectedCategories.includes(x.strCategory) : true) &&
         (this.selectedAreas.length? this.selectedAreas.includes(x.strArea) : true) )
-    },
+    }
   },
 
   methods: {
@@ -111,14 +110,15 @@ export default {
       let i = 1
       while (i <= 20) {   // 20 is the max num of ingredients for any meal
         let currIngr = 'strIngredient' + i
-        let name = meal[currIngr]
+        let simpleName = meal[currIngr]
+        if (simpleName==undefined || simpleName.trim().length==0) {  // if name of ingr is null or empty, stop
+          break
+        }
+        let name = simpleName
           .toLowerCase()
           .split(' ')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ')
-        if (name===null || name.length==0) {  // if name of ingr is null or empty, stop
-          break
-        }
         let temp = {}
         temp['name'] = name
         temp['url'] = getSmallIngrImageURL(name)
@@ -138,10 +138,7 @@ export default {
         i++
       }
       const result = new Array(...selArray, ...missArray)
-      // const selectedNum = this.selectedIngrs.length
-      // meal.missing = result.length - selectedNum
       meal.missing = missArray.length
-      this.mealIngredients = result
       return result
     },
     isSelected(x) {

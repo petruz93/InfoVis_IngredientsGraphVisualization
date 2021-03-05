@@ -23,10 +23,6 @@ export default {
     }
   },
 
-  data () {
-    return {}
-  },
-
   methods: {
     imageURL(ingr) {
       return getSmallIngrImageURL(ingr)

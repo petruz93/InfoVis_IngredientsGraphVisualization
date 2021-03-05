@@ -45,15 +45,18 @@
 
 
 <script>
-import { getMealsByIngredient, getMealDetailsById, getAllIngredients, getAllCategories, getAllAreas } from '@/themealdbConnector.js'
-// import isEqual from 'lodash.isequal'
+import {
+  getMealsByIngredient,
+  getMealDetailsById,
+  getAllIngredients,
+  getAllCategories,
+  getAllAreas} from '@/themealdbConnector.js'
 
 export default {
   name: 'SearchView',
   
   components: {
     SearchBar: () => import('@/components/SearchBar'),
-    // SelectedIngredients: () => import('@/components/SelectedIngredients'),
     IngredientVisualizer: () => import('@/components/IngredientVisualizer'),
     SearchResult: () => import('@/components/SearchResult.vue'),
     SearchFilter: () => import('@/components/SearchFilter.vue'),
@@ -69,10 +72,8 @@ export default {
 
   data () {
     return {
-      // mealData: [],
       allIngredients: [],
       searchFlag: false,
-      // searched: false,
       meals: [],
       selectedMeal: {},
       allMealCategories: [],
@@ -83,24 +84,15 @@ export default {
       searchMealAreas: [],
       selectedIngredients: [],
       privateState: 'idle'
-      // ingredient: ''
     }
   },
+
   created () {
     console.log('App loaded'),
     this.fetchAllIngredients(),
     this.updateMealData()
   },
-  computed: {
-    // searchMealCategories () {
-    //   const categorySet = new Set(this.meals.map(x => x.strCategory))
-    //   return Array.from(categorySet).sort((a,b) => a.localeCompare(b))
-    // },
-    // searchMealAreas () {
-    //   const areaSet = new Set(this.meals.map(x => x.strArea))
-    //   return Array.from(areaSet).sort((a,b) => a.localeCompare(b))
-    // },
-  },
+
   watch: {
     state: {
       deep: true,
@@ -114,36 +106,15 @@ export default {
         this.updateState(newState)
       }
     },
-    // privateState() {
-    //   if(this.privateState==="idle") {
-    //     this.meals = []
-    //       this.searchMealCategories = []
-    //       this.searchMealAreas = []
-    //     this.selectedIngredients.splice(0)
-    // // } else if(this.privateState==="searched") {
-    // // } else if(this.privateState==="expanded") {
-    // // }
-    //   }
-    // },
     meals () {
       const categorySet = new Set(this.meals.map(x => x.strCategory))
       this.searchMealCategories = Array.from(categorySet).sort((a,b) => a.localeCompare(b))
-        // .map(cat => {
-        //   const obj = {}
-        //   obj.text = cat
-        //   obj.value = cat
-        //   return obj
-        // })
       const areaSet = new Set(this.meals.map(x => x.strArea))
       this.searchMealAreas = Array.from(areaSet).sort((a,b) => a.localeCompare(b))
     }
   },
+
   methods: {
-    // reset() {
-    //   // this.meals = []
-    //   // this.selectedIngredients = []
-    //   this.updateState('idle')
-    // },
     async fetchAllIngredients() {
       try {
         this.allIngredients = await getAllIngredients()
@@ -171,7 +142,6 @@ export default {
           // for each meal it makes async and parallel requests for its datails
           result = await Promise.all(result.map(x => getMealDetailsById(x.idMeal)))
           this.meals = result
-          // this.selectedIngredients = []
         } else {
           this.meals = []
         }
@@ -200,7 +170,6 @@ export default {
       this.searchMeals(this.selectedIngredients, state)
     },
     clear () {
-      // this.meals = []
       this.searchMealCategories = []
       this.searchMealAreas = []
       this.selectedIngredients.splice(0)
@@ -209,7 +178,6 @@ export default {
       } else if (this.privateState === 'expanded') {
         this.updateState('cleanExpanded')
       }
-      // this.updateState(state)
     },
     async updateMealData() {
       try {
@@ -233,9 +201,10 @@ export default {
       this.privateState = state
       this.$emit('search-state-change', state)
     }
-  },
+  }
 }
 </script>
+
 
 <style scoped>
   .ingr-img {

@@ -5,12 +5,12 @@
         <h3 class="text-left">{{ letter }}</h3>
         <b-list-group horizontal class="overflow-auto">
           <b-list-group-item v-for="i in list" :key="i" class="inner-list-item" align="center">
-              <a @click=searchByIngredient(i) role="button" aria-pressed="true" class="text-theme">
-                <b-img-lazy :alt="i" :src="imageURL(i)" class="ingr-img d-block"></b-img-lazy>
-              </a>
-              <div class="d-block">
-                <a @click=searchByIngredient(i) role="button" aria-pressed="true">{{ i }}</a>
-              </div>
+            <a @click=searchByIngredient(i) role="button" aria-pressed="true" class="text-theme">
+              <b-img-lazy :alt="i" :src="imageURL(i)" class="ingr-img d-block"></b-img-lazy>
+            </a>
+            <div class="d-block">
+              <a @click=searchByIngredient(i) role="button" aria-pressed="true">{{ i }}</a>
+            </div>
           </b-list-group-item>
         </b-list-group>
       </b-list-group-item>
@@ -29,14 +29,10 @@ export default {
   props: {
     ingredients: {
       required: true,
-      type: Array,
-      default: () => [],
+      type: Array
     }
   },
 
-  data() {
-    return {}
-  },
   computed: {
     alphabeticalIngredients () {
       const abIngredients = new Object()
@@ -51,6 +47,7 @@ export default {
       return abIngredients
     }
   },
+  
   methods: {
     imageURL(ingr) {
       return getSmallIngrImageURL(ingr)

@@ -96,9 +96,11 @@
   </div>
 </template>
 
+
 <script>
 export default {
   name: 'SearchFilter',
+
   props: {
     state: {
       required: true,
@@ -106,13 +108,11 @@ export default {
     },
     allMealCategories: {
       required: true,
-      type: Array,
-      default: () => []
+      type: Array
     },
     allMealAreas: {
       required: true,
-      type: Array,
-      default: () => []
+      type: Array
     },
     searchMealCategories: {
       required: true,
@@ -121,22 +121,25 @@ export default {
     searchMealAreas: {
       required: true,
       type: Array
-    },
+    }
   },
+
   data () {
     return {
       selectedCategories: [],
       selectedAreas: [],
       selectedSortOption: {},
-      sortOptions: 
-        [{
+      sortOptions: [
+        {
           text: 'Missing Ingredients - ascending', value: 'ascending'
         },
         {
           text: 'Missing Ingredients - descending', value: 'descending'
         }
-      ]}
+      ]
+    }
   },
+
   computed: {
     disabledCategories () {
       return this.allMealCategories.filter(x => !this.searchMealCategories.includes(x))
@@ -145,6 +148,7 @@ export default {
       return this.allMealAreas.filter(x => !this.searchMealAreas.includes(x))
     }
   },
+
   watch: {
     searchMealCategories () {
       setTimeout(() => {
@@ -155,14 +159,6 @@ export default {
           this.selectedCategories = []
         }
       })
-    // else if (this.state==='cleanSearch' || this.state==='idle') {
-    //     this.selectedCategories = []
-    //   }
-    //   // if (this.selectedCategories.length==0 && 
-    //   //     this.searchMealCategories!=this.allMealCategories
-    //   //      || this.searchMealCategories.length==0) {
-    //   //   this.selectedCategories = this.searchMealCategories
-    //   // }
     },
     searchMealAreas () {
       setTimeout(() => {
@@ -173,14 +169,6 @@ export default {
           this.selectedAreas = []
         }
       })
-      // if (this.state==='cleanSearch') {
-      //   this.selectedAreas = []
-      // }
-      // if (this.selectedAreas.length==0 && 
-      //     this.searchMealAreas!=this.allMealAreas ||
-      //     this.searchMealAreas.length==0) {
-      //   this.selectedAreas = this.searchMealAreas
-      // }
     },
     selectedCategories () {
       this.$emit('select-category', this.selectedCategories)
@@ -198,6 +186,6 @@ export default {
       else
         this.$emit('miss-ingr-sort', false)
     }
-  },
+  }
 }
 </script>

@@ -9,22 +9,18 @@
           :options="allIngredients"
           placeholder="Choose your ingredients"
         >
-          <!--  
-          @input="addToSelectedList"
-          @input="submitData"
-            -->
           <template #option="{ strIngredient }">
             <b-img-lazy :src="imageURL(strIngredient)"
-                        rounded="circle"
-                        blank-color="#FEFFA3"
-                        width="55%"
-                        class="mr-2 border border-dark bg-light"></b-img-lazy>
+              rounded="circle"
+              blank-color="#FEFFA3"
+              width="55%"
+              class="mr-2 border border-dark bg-light"
+            ></b-img-lazy>
             <span class="mr-auto text-theme">{{ strIngredient }}</span>
           </template>
         </v-select>
       </b-col>
       <b-col cols="12" sm="12" md="4" align-self="center" class="mt-1">
-        <!-- <b-button variant="primary" @click="searchMeals(selectedIngredients)"> -->
         <b-button variant="primary" @click="onClickSearch(privateSelIngrs)">
           <b-icon icon="search" class="mr-2"></b-icon>
           <span>Find Recipes</span>
@@ -33,8 +29,6 @@
           <span>Clear</span>
         </b-button>
       </b-col>
-    </b-row>
-    <b-row>
     </b-row>
     <SelectedIngredients v-if=privateSelIngrs.length :selectedList=privateSelIngrs></SelectedIngredients>
   </b-container>
@@ -50,14 +44,13 @@ export default {
 
   components: {
     vSelect,
-    SelectedIngredients: () => import('@/components/SelectedIngredients'),
+    SelectedIngredients: () => import('@/components/SelectedIngredients')
   },
 
   props: {
     allIngredients: {
       required: true,
       type: Array,
-      default: () => []
     },
     selectedIngredients: {
       type: Array,
@@ -89,14 +82,6 @@ export default {
     onClickClear() {
       this.$emit('clear')
     }
-  },
-
+  }
 }
 </script>
-
-
-<style>
-/* :root {
-  --primary: #7391BC
-} */
-</style>
