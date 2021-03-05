@@ -82,7 +82,7 @@ Clicking on the website logo will completely reload the application.
 
 ### Project setup
 
-From the @/client folder:
+From the @/client folder run the following commands on a terminal:
 
 ```
 
