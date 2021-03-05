@@ -1,24 +1,27 @@
 <template>
   <div id="app">
-    <a role="button" aria-pressed="true">
-    <!-- <a role="button" aria-pressed="true" href="">
-      <img alt="App logo" src="@/assets/recipes-icon.png"> -->
-      <img alt="App logo" src="@/assets/recipes-icon.png" @click="changeSearchState('idle')">
+    <!-- <a role="button" aria-pressed="true">
+      <img alt="App logo" src="@/assets/recipes-icon.png" @click="changeSearchState('idle')"> -->
+    <a role="button" aria-pressed="true" href="">
+      <img alt="App logo" src="@/assets/recipes-icon.png">
     </a>
     <SearchView 
       :state=searchState
       @search-state-change=changeSearchState>
     </SearchView>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
 import SearchView from '@/views/SearchView.vue'
+import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'App',
   components: {
-    SearchView
+    SearchView,
+    Footer
   },
   data() {
     return {

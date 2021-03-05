@@ -33,7 +33,7 @@
       @expand-recipe=selectMeal>
     </SearchResult>
 
-    <hr>
+    <hr class="my-4">
     <!-- visualizzazione degli ingredienti in ordine alfabetico -->
     <IngredientVisualizer
       v-if="privateState==='idle'"

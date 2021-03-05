@@ -2,7 +2,7 @@
   <b-container fluid="md">
     <b-overlay :show="searching" variant="dark" class="my-4">
       <div>
-        <div v-if="filteredMeals.length==0">
+        <div v-if="filteredMeals.length==0" class="my-5">
           <em>Sorry, no meals were found...<br>please try with different set of ingredients or filters.</em>
         </div>
         <div v-else>

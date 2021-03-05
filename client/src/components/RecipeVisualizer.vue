@@ -1,6 +1,5 @@
 <template>
   <b-container fluid="lg">
-    <b-card-group deck class="d-block">
       <b-card no-body class="my-3">
         <div class="my-3">
           <b-card-title title-tag="h2" style="color: var(--green-theme)">{{ meal.strMeal }}</b-card-title>
@@ -44,7 +43,6 @@
           </div>
         </b-card-text>
       </b-card>
-    </b-card-group>
   </b-container>
 </template>
 
